@@ -1,0 +1,25 @@
+Banana
+15
+grams
+120
+Ice cream
+3
+grams
+145
+N
+P
+X
+Banana Split
+dessert
+4
+Banana
+Y
+Ice cream
+N
+1
+Slice the banana into 5 slices.
+Y
+2
+Scoop up three ice cream balls.
+N
+Banana Split
