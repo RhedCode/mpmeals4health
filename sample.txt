@@ -2,13 +2,13 @@ Banana
 1000 grams 1250
 
 Oatmeal
-34 grams 50
+3.4 grams 50
 
 Watermelon
-200 grams 60
+20.50 grams 60
 
 Orange
-200 grams 24
+20.6 grams 24
 
 Chocolate Milk
 250 grams 300

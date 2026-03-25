@@ -5,30 +5,6 @@
 #include "info.h"
 #include "helper.c"
 
-void
-Menu()
-{
-	int loop = 1;
-	char input;
-
-	printf("[A] Access Recipes\n");
-	printf("[U] Update Recipes\n");
-	printf("[E] Exit\n");
-
-	do
-	{
-		scanf(" %c", &input);
-		if (input != 'A' && input && 'U' && input != 'E')
-			printf("[Invalid] Enter another option: ");
-	} while (loop && input != 'A' && input && 'U' && input != 'E');
-	
-	if (input == 'E')
-	{
-		loop = 0;
-		//Update();
-	}
-}
-
 //isUnique checks if food has not been added to the list.
 void
 AddFoodCalorie(IngredientsType food[], 
@@ -40,17 +16,17 @@ AddFoodCalorie(IngredientsType food[],
 		printf("Item name: ");
 		getString20(food[*row].item);
     	
-    	if (!isUniqueFood(food, *row))
+    	if (DuplicateFood(food, *row) != -1)
 			printf("Duplicate item is already stored!\n");
 
 		if (strlen(food[*row].item)<1)
 			printf("Item has no name!\n");
 
-	} while (!isUniqueFood(food, *row) || 
+	} while (DuplicateFood(food, *row) != -1 || 
 			 strlen(food[*row].item) < 1);
 	
 	printf("Quantity: ");
-	myIntInput(&food[*row].quantity);
+	myFloatInput(&food[*row].quantity);
 		
 	printf("Unit: ");
 	scanf("%15s", food[*row].unit);
@@ -67,42 +43,32 @@ void
 ViewFood(IngredientsType food[], int *row, int *page)
 {
     char key;
-	int i;
 
 	//Page is 0,1,2,3
 	//Row is 0,1,2,3,4,5,6...49
-
-	printf("[----------View Food Calorie----------]\n");
-	for (i=*page*10; i<10+*page && i < *row; i++)
-	  	printf("%s %d %s %d\n", food[i].item, food[i].quantity, food[i].unit, food[i].calories);
-	printf("\n");
-	printf("Page: %d [N] Next Page [P] Previous Page [X] Return to Menu ", *page+1);
-	
+	DisplayFood(food, row, page);
 	do
-	{
+	{	
 		myCharInput(&key);
-		printf("\n");
 		if (key == 'N' && *page != *row/10)
 		{
-	   		(*page)++;
-	   		ViewFood(food, row, page);
-	   	}
+			(*page)++;
+			DisplayFood(food, row, page);
+		}
 		else if (key == 'P' && *page != 0)
 		{
 	   		(*page)--;
-	   		ViewFood(food, row, page);
-		}
+	   		DisplayFood(food, row, page);
+	   	}
 	   	else if ((key == 'N' || key == 'P') && (*page == *row/10 || *page == 0))
-			printf("Exceeds page limit!\n");
+			printf("Exceeds page limit! ");
 		else
 			if (key != 'X')
-	   			printf("Invalid Input! Try another input: ");
+	   			printf("[Invalid] Enter another input: ");
 
     } while (key != 'X');
     
 	*page = 0;
-	printf("\n");
-	return; //Update();
 }
 
 
@@ -126,7 +92,7 @@ SaveCalorie(IngredientsType food[], int *row)
 		for (i=0; i<*row; i++)
 		{
       		fprintf(fp_save, "%s\n", food[i].item);
-	  		fprintf(fp_save, "%d %s %d\n", food[i].quantity, food[i].unit, food[i].calories);
+	  		fprintf(fp_save, "%g %s %d\n", food[i].quantity, food[i].unit, food[i].calories);
 	  		fprintf(fp_save, "\n");
       	}
       	fclose(fp_save);
@@ -140,7 +106,7 @@ LoadCalories(IngredientsType food[], int *row)
 {
 	FILE *fp_load;
 	String20 fileName, sBuff;
-	int dupe = -1, nBuff;
+	int dupe, nBuff;
 	char ch;
 	
 	printf("\n");
@@ -157,9 +123,9 @@ LoadCalories(IngredientsType food[], int *row)
 	{
 		while (getFileString20(food[*row].item, fp_load) != -1)
 		{
-			if (isUniqueFood(food, *row))
+			if ((dupe = DuplicateFood(food, *row)) != -1)
 			{
-				if (fscanf(fp_load, "%d%s%d", &food[*row].quantity, 
+				if (fscanf(fp_load, "%f%s%d ", &food[*row].quantity, 
 								   		  	   food[*row].unit, 
 								   		  	  &food[*row].calories) == 3)
 					(*row)++;
@@ -169,32 +135,30 @@ LoadCalories(IngredientsType food[], int *row)
 				printf("[Y/N] Do you wish to overwrite this data?\n");
 				printf("Ingredient Duplicate: %s\n", food[*row].item);
 				scanf("%c", &ch);
-				dupe = DuplicateFood(food, *row);
+
 				do
 				{
 					myCharInput(&ch);
 
 					if (ch != 'Y' && ch != 'N')
-						printf("Invalid Input! Try another Input: ");
+						printf("[Invalid] Enter another input: ");
 				} while (ch != 'Y' && ch != 'N');
 				
 				if (ch == 'Y')
 				{
 					strcpy(food[dupe].item, food[*row].item);
 					strcpy(food[*row].item, "");
-					fscanf(fp_load, "%d%s%d", &food[dupe].quantity, 
+					fscanf(fp_load, "%f%s%d ", &food[dupe].quantity, 
 										  	  food[dupe].unit, 
 										  	  &food[dupe].calories);
 				}
 				else
 				{
 					strcpy(food[*row].item, "");
-					fscanf(fp_load, "%d%s%d", &nBuff, sBuff, &nBuff);
+					fscanf(fp_load, "%d%s%d ", &nBuff, sBuff, &nBuff);
 				}
 			}
 		}
-		if (dupe == -1)
-			scanf("%c", &ch);
 		fclose(fp_load);
 	}
 	printf("\n");
@@ -215,13 +179,13 @@ AddRecipe(DishType dish[],
 	{
 		getString20(dish[*dishRow].dishName);
 
-		if (!isUniqueDish(dish, *dishRow))
+		if (DuplicateDish(dish, *dishRow) != -1)
     		printf("Duplicate item is already stored!\n");
 
 		if (strlen(dish[*dishRow].dishName)<1)
 			printf("Item has no name!\n");
 
-	} while(!isUniqueDish(dish, *dishRow) ||
+	} while(DuplicateDish(dish, *dishRow) != -1 ||
 			strlen(dish[*dishRow].dishName)<1);
 
 	printf("Classifaction of Dish [starter, main, dessert]: ");
@@ -231,7 +195,7 @@ AddRecipe(DishType dish[],
 		toLower(dish[*dishRow].classification);
 
 		if (!isClassification(dish[*dishRow].classification))
-			printf("Not a classification!\n");
+			printf("Not a classification! Try another Input: ");
 	} while (!isClassification(dish[*dishRow].classification));
 	
 	printf("Number of servings: ");
@@ -243,9 +207,14 @@ AddRecipe(DishType dish[],
 	{
 		AddIngredient(&dish[*dishRow], food, *foodRow);
 		printf("[Y/N] Would you like to add more Ingredients: ");
-		myCharInput(&ch);
-		printf("\n");
-	} while (dish[*dishRow].ingCount<20 &&
+		
+		do 
+		{
+			myCharInput(&ch);
+			if (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n')
+				printf("[Invalid] Input another option: ");
+		} while (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n');
+	} while (dish[*dishRow].ingCount<SIZE_ING &&
 			 ch!='N' &&
 			 ch!='n');
 			 
@@ -255,14 +224,19 @@ AddRecipe(DishType dish[],
 	{
 		AddStep(&dish[*dishRow]);
 		printf("[Y/N] Would you like to add more Steps: ");
-		myCharInput(&ch);
-	} while (dish[*dishRow].ingCount<15 &&
+		
+		do 
+		{
+			myCharInput(&ch);
+			if (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n')
+				printf("[Invalid] Input another option: ");
+		} while (ch != 'Y' && ch != 'y' && ch != 'N' && ch != 'n');
+	} while (dish[*dishRow].ingCount<SIZE_INS &&
 			 ch!='N' &&
 			 ch!='n');
 	printf("\n");
 	
 	(*dishRow)++;
-	//Update();
 }
 
 void 
@@ -290,7 +264,7 @@ AddIngredient(DishType *dish,
 		//printf("Item name: %s\n", dish->ingredients[dish->ingCount].item);
 		
 		printf("Quantity: ");
-		myIntInput(&dish->ingredients[dish->ingCount].quantity);
+		myFloatInput(&dish->ingredients[dish->ingCount].quantity);
 		
 		printf("Unit: ");
 		scanf("%15s%c", dish->ingredients[dish->ingCount].unit, &ch);
@@ -299,40 +273,13 @@ AddIngredient(DishType *dish,
 		dish->ingredients[dish->ingCount].calories = 0;
 	}
 	dish->ingCount++;
-}
-
-void 
-DeleteIngredient(IngredientsType food[], int *count)
-{
-	//Check for infinite loops if a char is inputted on an int value
-	int i, input;
-
-	if (*count > 1)
-	{
-		printf("List of Ingredients\n");
-		for (i=0; i<*count; i++)
-			printf("%d. %s\n", i+1, food[i].item);
-		printf("Choose an Ingredient to Delete: ");
-		
-		do
-		{
-			myIntInput(&input);
-			
-			if (!(input>=1 && input<=*count))
-				printf("Selected ingredient does not exist! Try again: ");
-		} while (!(input>=1 && input<=*count));
-		
-		DeleteStructFood(food, *count, input);
-		(*count)--;
-	}
-	else
-		printf("Insufficient items to Delete!\n");
+	printf("\n");
 }
 
 void
 AddStep(DishType *dish)
 {
-	int i, step, skipped;
+	int i, step;
 
 	//User can add a step anywhere from 1-15
 	//But user cannot skip so if the recipe only has 1 step
@@ -345,25 +292,53 @@ AddStep(DishType *dish)
 	
 	do
 	{
-		skipped = 0;
 		printf("Modify/Add a step number: ");
 		myIntInput(&step);
 
 		if (step > dish->insCount+1) //Using count as my basis
-			skipped = 1;
-
-		if (skipped)
 			printf("You have skipped an instruction! Try again: \n");
 
-	} while (step>=1 && step<=15 && skipped);
+	} while (step<1 || step>15 || step > dish->insCount+1);
 	
 	printf("\n[Edit] Instructions\n");
 	printf("%d. ", step);
 	strcpy(dish->instructions[step-1], "");
 	getString70(dish->instructions[step-1]);
-	
-	if (step == dish->ingCount+1)
+
+	if (step == dish->insCount+1)
 		dish->insCount++;
+	printf("\n");
+}
+
+void 
+DeleteIngredient(IngredientsType food[], int *count)
+{
+	//Check for infinite loops if a char is inputted on an int value
+	int i, input;
+
+	printf("[----------Delete Ingredient----------]\n");
+	if (*count > 1)
+	{
+		printf("List of Ingredients\n");
+		for (i=0; i<*count; i++)
+			printf("%d. %s\n", i+1, food[i].item);
+		printf("\n");
+		printf("[1-%d] Choose an Ingredient to Delete: ", *count);
+		
+		do
+		{
+			myIntInput(&input);
+			
+			if (!(input>=1 && input<=*count+1))
+				printf("Selected ingredient does not exist! Try again: ");
+		} while (!(input>=1 && input<=*count));
+		
+		DeleteStructFood(food, *count, input);
+		(*count)--;
+	}
+	else
+		printf("Insufficient items to Delete!\n");
+	printf("\n");
 }
 
 void
@@ -389,68 +364,71 @@ DeleteStep(DishType *dish)
 		DeleteArr(dish->instructions, dish->insCount, input);
 		dish->insCount--;
 	}
+	else
+		printf("Insufficient items to Delete!\n");
+	printf("\n");
 }
 
 void 
-ModifyRecipe(DishType dish[], IngredientsType food[], int foodRow, int recipeRow)
+ModifyRecipe(DishType dish[], IngredientsType food[], int foodRow, int dishRow)
 {
 	String20 dishName;
 	int choice, found;
 	
-	if (recipeRow<1) Update();
-	printf("[----------Modify Recipe----------]\n");
-	ListRecipeTitles(dish, recipeRow);
-
-	printf("Enter a Dish Name: ");
-	do 
+	if (dishRow>0)
 	{
-		getString20(dishName); //No need to retype after entered
+		printf("[----------Modify Recipe----------]\n");
+		ListRecipeTitles(dish, dishRow);
+
+		printf("Enter a Dish Name: ");
+		do 
+		{
+			getString20(dishName);
 		
-		found = RecipeTitleExists(dish, dishName, recipeRow);
-		if (found == -1)
-			printf("Recipe Title does not Exist! Try again: ");
-	} while (found == -1);
+			found = RecipeTitleExists(dish, dishName, dishRow);
+			if (found == -1)
+				printf("Recipe Title does not Exist! Try again: ");
+		} while (found == -1);
 	
-	printf("[Recipe to Modify] %s\n", dishName);
-	printf("	[1] Add Ingredient\n");
-	printf("	[2] Delete Ingredient\n");
-	printf("	[3] Add Step\n");
-	printf("	[4] Delete Step\n");
-	printf("	[5] Return to Update Recipe Box Menu\n");
-	printf("\n");
-	printf("Input an Option: ");
+		printf("[Recipe to Modify] %s\n", dishName);
+		printf("[1] Add Ingredient\n");
+		printf("[2] Delete Ingredient\n");
+		printf("[3] Add Step\n");
+		printf("[4] Delete Step\n");
+		printf("[5] Return to Update Recipe Box Menu\n");
+		printf("\n");
+		printf("Input an Option: ");
 
-	do
-	{
-		myIntInput(&choice);
+		do
+		{
+			myIntInput(&choice);
 
-		if (!(choice >= 1 && choice <= 5))
-			printf("[Invalid] Enter another option: ");
-	} while (!(choice >= 1 && choice <= 5));
+			if (choice < 1 || choice > 5)
+				printf("[Invalid] Enter another option: ");
+		} while (choice < 1 && choice > 5);
 
-	switch (choice)
-	{
-		case 1:
-			AddIngredient(&dish[found], food, foodRow);
-			ModifyRecipe(dish, food, foodRow, recipeRow);
-			break;
-		case 2:
-			DeleteIngredient(dish[found].ingredients, &dish[found].ingCount);
-			ModifyRecipe(dish, food, foodRow, recipeRow);
-			break;
-		case 3:
-			AddStep(&dish[found]);
-			ModifyRecipe(dish, food, foodRow, recipeRow);
-			break;
-		case 4:
-			DeleteStep(&dish[found]);
-			ModifyRecipe(dish, food, foodRow, recipeRow);
-			break;
-		case 5:
-			break;
-	} while (choice != 5);
-
-	Update();
+		switch (choice)
+		{
+			case 1:
+				AddIngredient(&dish[found], food, foodRow);
+				ModifyRecipe(dish, food, foodRow, dishRow);
+				break;
+			case 2:
+				DeleteIngredient(dish[found].ingredients, &dish[found].ingCount);
+				ModifyRecipe(dish, food, foodRow, dishRow);
+				break;
+			case 3:
+				AddStep(&dish[found]);
+				ModifyRecipe(dish, food, foodRow, dishRow);
+				break;
+			case 4:
+				DeleteStep(&dish[found]);
+				ModifyRecipe(dish, food, foodRow, dishRow);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void 
@@ -461,6 +439,7 @@ DeleteRecipes(DishType dish[],
 	int found;
 	
 	ListRecipeTitles(dish, *row);
+	printf("Enter a recipe to Remove: ");
 	getString20(key);
 	
 	found = RecipeTitleExists(dish, key, *row);
@@ -472,6 +451,7 @@ DeleteRecipes(DishType dish[],
 	}
 	else
 		printf("Recipe not found!\n");
+	printf("\n");
 }
 
 void 
@@ -503,9 +483,9 @@ SearchRecipeTitle(DishType dish[],
 	found = RecipeTitleExists(dish, name, row);
 	if (found != -1)
 		ViewRecipe(dish[found]);
-		//Access
 	else
-		printf("Not found!\n\n");
+		printf("Not found!\n");
+	printf("\n");
 }
 
 void
@@ -541,32 +521,60 @@ ScanRecipes(DishType dish[],
 	  			if (ch != 'X')
 	  				printf("Invalid Input! Try another input: ");
 	} while (ch != 'X' && i<row);
-	//Update();
 }
 
-/*
 void
 GenerateShoppingList(DishType dish[], int row)
 {
 	String20 name;
-	int i, found;
+	float ratio;
+	int i, found, size;
+	char ch;
 	
 	printf("[----------Generate Shopping List----------]\n");
 	ListRecipeTitles(dish, row);
-	printf("Which of these recipes to generate a shopping list for?\n");
-	getString20(name);
 	
-	found = RecipeTitleExists(dish, name, row);
-	
-	if (found != -1)
-		printf("%s\n", dish[i].dishName);
-		//Access
+	if (row > 0)
+	{
+		printf("Choose a Recipe: ");
+		do
+		{
+			getString20(name);
+			found = RecipeTitleExists(dish, name, row);
+		
+			if (found == -1)
+				printf("Recipe not found! Try another input: ");
+		} while (found == -1);
+		
+		printf("Input a serving size: ");
+		myIntInput(&size);
+		ratio = size/dish[found].serving;
+		
+		printf("Recipe: %s\n", dish[found].dishName);
+		for (i=0; i<dish[found].ingCount; i++)
+		{
+			printf("%s ", dish[found].ingredients[i].item); 
+			printf("%g ", dish[found].ingredients[i].quantity * ratio);
+			printf("%.1g\n", dish[found].ingredients[i].calories * ratio);
+		}
+	}
 	else
-		printf("Not found!");
+		printf("No recipes available!\n");
 	
-	//Access()
+	printf("\nPress any key to continue: ");
+	myCharInput(&ch);
 }
-*/
+
+void
+RecommendMenu()
+{
+	int calorie;
+	
+	printf("[----------Recommended Menu----------]\n");
+	myIntInput(&calorie);
+	
+	//<=calories;
+}
 
 void
 ScanRecipesByIngredient(DishType dish[], 
@@ -590,8 +598,6 @@ ScanRecipesByIngredient(DishType dish[],
 		
 		if (found != -1)
 			i = found;
-		//else
-			//Access();
 	}
 			
 	do
@@ -656,7 +662,7 @@ ImportRecipes(DishType dish[], int *row)
 {
 	FILE *fp_load;
 	String20 fileName, sBuff;
-	int dupe = -1, nBuff;
+	int dupe, nBuff;
 	char ch;
 	
 	printf("\n");
@@ -673,7 +679,7 @@ ImportRecipes(DishType dish[], int *row)
 	{
 		while (getFileString20(dish[*row].dishName, fp_load) != -1)
 		{
-			if (isUniqueDish(dish, *row))
+			if (DuplicateDish(dish, *row) != -1)
 			{
 				if (fscanf(fp_load, "%d%s%s%d", &dish[*row].serving, 
 								   		  		dish[*row].classification, 
@@ -722,42 +728,4 @@ ImportRecipes(DishType dish[], int *row)
 		fclose(fp_load);
 	}
 	printf("\n");
-}
-
-void
-Update()
-{
-	String20 username = "admin";
-    String20 password = "ad1234";
-    String20 userInput;
-    String20 userPassword;
-    int input;
-      
-    printf("Enter username: ");
-    scanf("%s", userInput);
-    printf("Enter Password: ");
-    scanf("%s", userPassword);
-         
-    if (strcmp(userInput, username) != 0 || strcmp(userPassword, password) != 0)
-    {
-        printf("Invalid username or password.\n");
-        Menu();
-    }
-    
-    printf("[----------Menu----------]\n");
-    printf("[1] Add Food-Calorie Info\n");
-	printf("[2] View Food-Calorie Chart\n");
-	printf("[3] Save Calorie Info\n");
-	printf("[4] Load Calorie Info\n");
-	printf("[5] Add Recipe\n");  
-    printf("[6] Modify Recipe\n");
-    printf("[7] Delete Recipe\n");
-    printf("[8] List Recipe Titles\n");
-    printf("[9] Scan Recipes\n");
-    printf("[10] Search Recipe by Title\n");
-    printf("[11] Export Recipes\n");
-    printf("[12] Import Recipes\n");
-    printf("[13] Return to Main Menu\n");
-    printf("Input your choice: ");
-    myIntInput(&input);
 }

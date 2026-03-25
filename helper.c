@@ -29,6 +29,21 @@ myIntInput(int * dest)
 	} while (buffer > 0);
 }
 
+void 
+myFloatInput(float * dest)
+{
+	int buffer;
+	
+	do 
+	{
+		scanf("%f", dest);
+		buffer = nextLine();
+				
+		if (buffer > 0)
+			printf("Invalid Input. Try another Input: "); //Handles inputs like 1ABC
+	} while (buffer > 0);
+}
+
 void
 myCharInput(char * dest)
 {
@@ -44,6 +59,43 @@ myCharInput(char * dest)
 	} while (buffer > 0);
 }
 
+void
+loadAccount(String20 username, String20 password)
+{
+	FILE *fp;
+	String20 fileName = "admin.txt";
+	
+	fp = fopen(fileName, "r");	
+	
+	if (fp != NULL)
+	{
+		fscanf(fp, "%s%s", username, password);
+		fclose(fp);
+	}
+	else 
+		printf("File was not loaded!\n");
+}
+
+int 
+loginPage(String20 username, String20 password)
+{
+    String20 userInput;
+    String20 userPassword;
+    
+    printf("[----------Login Page----------]\n");
+    printf("Enter username: ");
+    scanf("%s", userInput);
+    printf("Enter Password: ");
+    scanf("%s", userPassword);
+    
+    if (strcmp(userInput, username) != 0 || strcmp(userPassword, password) != 0)
+	{
+        printf("Invalid username or password.\n");
+        return 0;
+    }
+    
+    return 1;
+}
 
 void
 getString70(String70 string)
@@ -128,34 +180,8 @@ getFileString70(String70 string, FILE *fp)
 }
 
 int 
-isUniqueFood(IngredientsType food[], 
-		 	 int row)
-{
-	int i, unique = 1;
-
-	for (i=0; i<row && unique; i++)
-		if (strcmp(food[row].item, food[i].item)==0 && row != i)
-			unique = 0;
-			
-	return unique;
-}
-
-int 
-isUniqueDish(DishType dish[], 
-		 	 int row)
-{
-	int i, unique = 1;
-
-	for (i=0; i<row && unique; i++)
-		if (strcmp(dish[row].dishName, dish[i].dishName)==0 && row != i)
-			unique = 0;
-			
-	return unique;
-}
-
-int 
 DuplicateFood(IngredientsType food[], 
-		 	 	int row)
+		 	  int row)
 {
 	int i, duplicate = -1;
 
@@ -164,6 +190,31 @@ DuplicateFood(IngredientsType food[],
 			duplicate = i;
 			
 	return duplicate;
+}
+
+int 
+DuplicateDish(DishType dish[], 
+			  int row)
+{
+	int i, duplicate = -1;
+
+	for (i=0; i<row && duplicate == -1; i++)
+		if (strcmp(dish[row].dishName, dish[i].dishName)==0 && row != i)
+			duplicate = i;
+			
+	return duplicate;
+}
+
+void 
+DisplayFood(IngredientsType food[], int *row, int *page)
+{
+	int i;
+	
+	printf("[----------View Food Calorie----------]\n");
+	for (i=*page*10; i<10*(*page+1) && i < *row; i++)
+	  	printf("%s %g %s %d\n", food[i].item, food[i].quantity, food[i].unit, food[i].calories);
+	printf("\n");
+	printf("Page: %d [N] Next Page [P] Previous Page [X] Return to Menu ", *page+1);
 }
 
 void 
@@ -272,7 +323,7 @@ ViewRecipe(DishType dish)
 	for (i=0; i<dish.ingCount; i++)
 	{
 		printf("	%d. %s\n", i+1, dish.ingredients[i].item);
-		printf("		Quantity: %d %s\n", dish.ingredients[i].quantity, dish.ingredients[i].unit);
+		printf("		Quantity: %g %s\n", dish.ingredients[i].quantity, dish.ingredients[i].unit);
 		printf("		Calories: %d\n", dish.ingredients[i].calories);
 	}
 	
@@ -336,7 +387,7 @@ SaveIngredients(FILE *fp, DishType dish)
 	
 	fprintf(fp, "Ingredients %d\n", dish.ingCount);
 	for (i=0; i<dish.ingCount; i++)
-		fprintf(fp, "%d %s %s\n", dish.ingredients[i].quantity, dish.ingredients[i].unit, dish.ingredients[i].item);
+		fprintf(fp, "%g %s %s\n", dish.ingredients[i].quantity, dish.ingredients[i].unit, dish.ingredients[i].item);
 }
 
 void
@@ -356,7 +407,7 @@ ReadIngredients(FILE *fp, DishType *dish)
 	
 	for (i=0; i<dish->ingCount; i++)
 	{
-		fscanf(fp, "%d%s ", &dish->ingredients[i].quantity,
+		fscanf(fp, "%f%s ", &dish->ingredients[i].quantity,
 							 dish->ingredients[i].unit);
 		getFileString20(dish->ingredients[i].item, fp);
 		dish->ingredients[i].calories = 0;
