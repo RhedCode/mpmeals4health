@@ -26,8 +26,7 @@ void
 Access(DishType dish[], 
 	   IngredientsType food[], 
 	   int dishRow, 
-	   int foodRow, 
-	   int foodPage,
+	   int foodRow,
 	   String20 username,
 	   String20 password)
 {
@@ -53,35 +52,35 @@ Access(DishType dish[],
 	switch (input)
 	{
 		case 1:
-			ImportRecipes(dish, &dishRow);
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			ImportRecipes(dish, food, &dishRow, foodRow);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 2:
 			ListRecipeTitles(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 3: 
 			ScanRecipes(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 4:
 			SearchRecipeTitle(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 5:
 			GenerateShoppingList(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 6:
 			ScanRecipesByIngredient(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 7:
 			
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		default:
-			Menu(dish, food, dishRow, foodRow, foodPage, username, password);
+			Menu(dish, food, dishRow, foodRow, username, password);
 			break;
 	}
 }
@@ -91,7 +90,6 @@ Update(DishType dish[],
 	   IngredientsType food[], 
 	   int dishRow, 
 	   int foodRow, 
-	   int foodPage,
 	   String20 username,
 	   String20 password)
 {
@@ -128,54 +126,54 @@ Update(DishType dish[],
 	{
 		case 1:
 			AddFoodCalorie(food, &foodRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 2:
-			ViewFood(food, &foodRow, &foodPage);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			ViewFood(food, foodRow);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 3:
-			SaveCalorie(food, &foodRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			SaveCalorie(food, foodRow);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 4:
 			LoadCalories(food, &foodRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 5:
 			AddRecipe(dish, food, &foodRow, &dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 6:
 			ModifyRecipe(dish, food, foodRow, dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 7: 
 			DeleteRecipes(dish, &dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 8: 
 			ListRecipeTitles(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 9:
 			ScanRecipes(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 10:
 			SearchRecipeTitle(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 11:
-			ExportRecipes(dish, &dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			ExportRecipes(dish, dishRow);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		case 12:
-			ImportRecipes(dish, &dishRow);
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			ImportRecipes(dish, food, &dishRow, foodRow);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		default:
-			Menu(dish, food, dishRow, foodRow, foodPage, username, password);
+			Menu(dish, food, dishRow, foodRow, username, password);
 			break;
 	}
 }
@@ -185,7 +183,6 @@ Menu(DishType dish[],
 	 IngredientsType food[], 
 	 int dishRow, 
 	 int foodRow, 
-	 int foodPage,
 	 String20 username,
 	 String20 password)
 {	
@@ -206,11 +203,11 @@ Menu(DishType dish[],
 	switch (input)
 	{
 		case 'A':
-			Access(dish, food, dishRow, foodRow, foodPage, username, password);
+			Access(dish, food, dishRow, foodRow, username, password);
 			break;
 		
 		case 'U':
-			Update(dish, food, dishRow, foodRow, foodPage, username, password);
+			Update(dish, food, dishRow, foodRow, username, password);
 			break;
 		
 		default:
@@ -225,10 +222,9 @@ main()
 	IngredientsType food[SIZE];
 	String20 username;
 	String20 password;
-    int foodPage = 0,
-		foodRow = 0,
+    int foodRow = 0,
 		dishRow = 0;
 
-    Menu(dish, food, dishRow, foodRow, foodPage, username, password);
+    Menu(dish, food, dishRow, foodRow, username, password);
     return 0;
 }

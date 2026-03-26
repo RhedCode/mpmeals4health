@@ -1,11 +1,21 @@
-/*
-  funcInput provides a reusable scanf for "pausing" the program
-  unless the user inputs a value.
-*/
+/*********************************************************************************************************
+This is to certify that this project is my own work, based on my personal efforts in studying and applying the concepts learned. I have
+constructed the functions and their respective algorithms and corresponding code by myself. The program was run, tested, and
+debugged by my own efforts. I further certify that I have not copied in part or whole or otherwise plagiarized the work of other
+students and/or persons, nor did I employ the use of AI in any part of the deliverable.
+																Rhed Lanz C. Dela Cruz, DLSU ID# 12507253
+*********************************************************************************************************/
+
 #include "info.h"
 #include "helper.c"
 
-//isUnique checks if food has not been added to the list.
+/* AddFoodCalorie displays and accepts user input on the Item name, quantity, 
+   unit, & calories.
+   
+   @param food - Contains a struct array of max size 50.
+   @param row - Contains the current size of food row.
+*/
+
 void
 AddFoodCalorie(IngredientsType food[], 
 			   int *row)
@@ -16,15 +26,20 @@ AddFoodCalorie(IngredientsType food[],
 		printf("Item name: ");
 		getString20(food[*row].item);
     	
+    	/* Checks if there is an existing item and if item has no name. */
     	if (DuplicateFood(food, *row) != -1)
+    	{
 			printf("Duplicate item is already stored!\n");
-
-		if (strlen(food[*row].item)<1)
-			printf("Item has no name!\n");
+			strcpy(food[*row].item, "");
+		}
+		else
+			if (strlen(food[*row].item) < 1)
+				printf("Item has no name!\n");
 
 	} while (DuplicateFood(food, *row) != -1 || 
 			 strlen(food[*row].item) < 1);
 	
+	/* User Inputs */
 	printf("Quantity: ");
 	myFloatInput(&food[*row].quantity);
 		
@@ -32,48 +47,64 @@ AddFoodCalorie(IngredientsType food[],
 	scanf("%15s", food[*row].unit);
 	
 	printf("Calories: ");
-	myIntInput(&food[*row].calories);
+	myIntInput(&food[*row].calories); 
 	
 	printf("\n");
 	
 	(*row)++;
 }
 
+/* ViewFood displays Food List of a maximum of 10 items per page. 
+   
+   @param food - Contains a struct array of max size 50.
+   @param row - Contains the current size of food row.
+*/
+
 void 
-ViewFood(IngredientsType food[], int *row, int *page)
+ViewFood(IngredientsType food[], 
+		 int row)
 {
     char key;
+    int page = 0; //Handles which page is currently being selected.
 
-	//Page is 0,1,2,3
-	//Row is 0,1,2,3,4,5,6...49
 	DisplayFood(food, row, page);
 	do
 	{	
 		myCharInput(&key);
-		if (key == 'N' && *page != *row/10)
-		{
-			(*page)++;
+		
+		//Computes if the page has reached the current maximum page.
+		if (key == 'N' && page != row/10) 
+		{	
+			page++;
 			DisplayFood(food, row, page);
-		}
-		else if (key == 'P' && *page != 0)
+		}	
+		//Computes if the page has reached the current minimum page, which is always 0.
+		else if (key == 'P' && page != 0)
 		{
-	   		(*page)--;
+			page--;
 	   		DisplayFood(food, row, page);
 	   	}
-	   	else if ((key == 'N' || key == 'P') && (*page == *row/10 || *page == 0))
+	   		
+	   	//If either two of the conditions fail in terms of page, then a warning message is received.
+	   	else if ((key == 'N' || key == 'P') && (page == row/10 || page == 0))
 			printf("Exceeds page limit! ");
 		else
 			if (key != 'X')
 	   			printf("[Invalid] Enter another input: ");
 
     } while (key != 'X');
-    
-	*page = 0;
+    printf("\n");
 }
 
+/* SaveCalorie saves the current food struct array information in a text file.
+   
+   @param food - Contains a struct array of max size 50.
+   @param row - Contains the current size of food row.
+*/
 
 void 
-SaveCalorie(IngredientsType food[], int *row)
+SaveCalorie(IngredientsType food[], 
+			int row)
 {
 	FILE *fp_save;
 	String20 fileName;
@@ -85,11 +116,11 @@ SaveCalorie(IngredientsType food[], int *row)
 	
 	fp_save = fopen(fileName, "w");
 
-	if (fp_save == NULL || *row == 0)
+	if (fp_save == NULL || row == 0)
 		printf("No data is detected to be saved!\n");
 	else
 	{
-		for (i=0; i<*row; i++)
+		for (i=0; i<row; i++)
 		{
       		fprintf(fp_save, "%s\n", food[i].item);
 	  		fprintf(fp_save, "%g %s %d\n", food[i].quantity, food[i].unit, food[i].calories);
@@ -100,6 +131,12 @@ SaveCalorie(IngredientsType food[], int *row)
 	printf("\n");
 }
 
+/* LoadCalories loads/appends the current food struct array information 
+   from text file to the source code array of structs.
+   
+   @param food - Contains a struct array of max size 50.
+   @param *row - Contains the current size of food row. 
+*/
 
 void
 LoadCalories(IngredientsType food[], int *row)
@@ -109,9 +146,7 @@ LoadCalories(IngredientsType food[], int *row)
 	int dupe, nBuff;
 	char ch;
 	
-	printf("\n");
 	printf("[----------Load Food Calorie----------]\n");
-	
 	printf("Enter a text file name: ");
 	scanf("%s", fileName);
 	
@@ -121,20 +156,23 @@ LoadCalories(IngredientsType food[], int *row)
 		printf("ERROR: No file detected!\n");
 	else
 	{
+		//Reads food name. Checks if file read is EOF (e.g. -1).
 		while (getFileString20(food[*row].item, fp_load) != -1)
 		{
-			if ((dupe = DuplicateFood(food, *row)) != -1)
+			//Checks if food is unique (e.g. -1).
+			if ((dupe = DuplicateFood(food, *row)) == -1)
 			{
+				//Reads other food details (e.g. quantity, unit, and calories).
 				if (fscanf(fp_load, "%f%s%d ", &food[*row].quantity, 
 								   		  	   food[*row].unit, 
 								   		  	  &food[*row].calories) == 3)
 					(*row)++;
 			}
+			//Checks if food is not unique (e.g. index of original food).
 			else
 			{
 				printf("[Y/N] Do you wish to overwrite this data?\n");
 				printf("Ingredient Duplicate: %s\n", food[*row].item);
-				scanf("%c", &ch);
 
 				do
 				{
@@ -144,6 +182,7 @@ LoadCalories(IngredientsType food[], int *row)
 						printf("[Invalid] Enter another input: ");
 				} while (ch != 'Y' && ch != 'N');
 				
+				//Allows user to decide whether to replace the original or keep it.
 				if (ch == 'Y')
 				{
 					strcpy(food[dupe].item, food[*row].item);
@@ -164,12 +203,20 @@ LoadCalories(IngredientsType food[], int *row)
 	printf("\n");
 }
 
+/* AddRecipe displays and accepts user input regarding adding recipe information
+   within a recipe/dish struct array.
+   
+   @param dish - Contains a struct array of recipe/dish of max size 50.
+   @param food - Contains a struct array of food/ingredients of max size 50.
+   @param *foodRow - Contains current food row count.
+   @param *dishRow - Contains current dish row count.
+*/
 
 void
 AddRecipe(DishType dish[], 
 		  IngredientsType food[], 
-		  int * foodRow, 
-		  int * dishRow)
+		  int *foodRow, 
+		  int *dishRow)
 {
 	char ch;
 	
@@ -181,19 +228,22 @@ AddRecipe(DishType dish[],
 
 		if (DuplicateDish(dish, *dishRow) != -1)
     		printf("Duplicate item is already stored!\n");
+		else
+			if (strlen(dish[*dishRow].dishName) < 1)
+				printf("Item has no name!\n");
 
-		if (strlen(dish[*dishRow].dishName)<1)
-			printf("Item has no name!\n");
-
-	} while(DuplicateDish(dish, *dishRow) != -1 ||
-			strlen(dish[*dishRow].dishName)<1);
+	} while(DuplicateDish(dish, *dishRow) != -1 || //Checks if recipe is unique.
+			strlen(dish[*dishRow].dishName) < 1); //Checks if recipe has a name.
 
 	printf("Classifaction of Dish [starter, main, dessert]: ");
 	do
 	{
 		scanf("%s", dish[*dishRow].classification);
+		
+		//Converts inputted string to lowercase.
 		toLower(dish[*dishRow].classification);
 
+		//Checks if inputted text is "main", "starter", or "dessert".
 		if (!isClassification(dish[*dishRow].classification))
 			printf("Not a classification! Try another Input: ");
 	} while (!isClassification(dish[*dishRow].classification));
@@ -201,10 +251,11 @@ AddRecipe(DishType dish[],
 	printf("Number of servings: ");
 	myIntInput(&dish[*dishRow].serving);
 	
-	//Add Ingredient System
+	//Initializes the ingredient count of a recipe struct.
 	dish[*dishRow].ingCount = 0;
 	do
 	{
+		//Allows users to input ingredient information.
 		AddIngredient(&dish[*dishRow], food, *foodRow);
 		printf("[Y/N] Would you like to add more Ingredients: ");
 		
@@ -218,10 +269,11 @@ AddRecipe(DishType dish[],
 			 ch!='N' &&
 			 ch!='n');
 			 
-	//Add Instruction System
+	//Initializes the instruction count of a recipe struct.
 	dish[*dishRow].insCount = 0;
 	do 
 	{
+		//Allows users to input instructions information.
 		AddStep(&dish[*dishRow]);
 		printf("[Y/N] Would you like to add more Steps: ");
 		
@@ -234,34 +286,49 @@ AddRecipe(DishType dish[],
 	} while (dish[*dishRow].ingCount<SIZE_INS &&
 			 ch!='N' &&
 			 ch!='n');
-	printf("\n");
-	
 	(*dishRow)++;
+	
+	printf("\n");
 }
+
+/* AddIngredient allows users to add an ingredient based on the same struct
+   format information.
+   
+   @param dish - Contains a struct array of recipe/dish of max size 50.
+   @param food - Contains a struct array of food/ingredients of max size 50.
+   @param foodRow - Contains current food row count.
+*/
 
 void 
 AddIngredient(DishType *dish, 
 			  IngredientsType food[], 
 			  int foodRow)
 {
-	//check food-calorie first with dish name
 	int i, found = -1;
 	String20 name;
 	char ch;
 
 	printf("Add Ingredient: ");
-	getString20(name);
+	do
+	{
+		getString20(name);
+		
+		if (strlen(food[dish->ingCount].item) < 1)
+			printf("Item has no name!\n");
+	} while (strlen(food[dish->ingCount].item) < 1);
+	
+	//Checks an existing ingredient in the food struct Array with the given input.
 	for (i=0; i<foodRow && found==-1; i++)
 		if (strcmp(food[i].item, name)==0)
 			found = i;
-
+			
 	if (found != -1)
+		//if existing ingredient was found, then use that ingredient for the recipe.
 		dish->ingredients[dish->ingCount] = food[found];
 	else	
 	{
-	//if it is not found, add ingredient to recipe with same code but 0 calories
+		//if not found, add ingredient to recipe with same code but 0 calories
 		strcpy(dish->ingredients[dish->ingCount].item, name);
-		//printf("Item name: %s\n", dish->ingredients[dish->ingCount].item);
 		
 		printf("Quantity: ");
 		myFloatInput(&dish->ingredients[dish->ingCount].quantity);
@@ -276,15 +343,17 @@ AddIngredient(DishType *dish,
 	printf("\n");
 }
 
+/* AddStep allows users to add an instruction with the given recipe.
+   
+   @param *dish - Contains a pointer of a single dish.
+*/
+
 void
 AddStep(DishType *dish)
 {
 	int i, step;
 
-	//User can add a step anywhere from 1-15
-	//But user cannot skip so if the recipe only has 1 step
-	//AKA, the first step, user cannot add at the end and
-	//Needs to be reprompted for a valid step
+	//Displays Instructions
 	printf("List of Instructions\n");
 	for (i=0; i<dish->insCount; i++)
 		printf("	%d. %s\n", i+1, dish->instructions[i]);
@@ -295,25 +364,35 @@ AddStep(DishType *dish)
 		printf("Modify/Add a step number: ");
 		myIntInput(&step);
 
-		if (step > dish->insCount+1) //Using count as my basis
+		/* Checks if the user input > current instruction count to see if an
+		instruction is skipped (+1 since input is 1-15, not 0-14). */
+		if (step > dish->insCount+1)
 			printf("You have skipped an instruction! Try again: \n");
 
 	} while (step<1 || step>15 || step > dish->insCount+1);
 	
 	printf("\n[Edit] Instructions\n");
 	printf("%d. ", step);
+	/* Initializes an instruction in the case the user would overwrite 
+	a current instruction. */
 	strcpy(dish->instructions[step-1], "");
 	getString70(dish->instructions[step-1]);
 
+	//Checks if the inputted step is equal to instruction count, then it will increment.
 	if (step == dish->insCount+1)
 		dish->insCount++;
 	printf("\n");
 }
 
+/* DeleteIngredient allows users to delete an ingredient from the food array struct.
+   
+   @param food - Contains a struct array of food/ingredients of max size 50.
+   @param *count - Contains the current ingredient count of a recipe dish.
+*/
+
 void 
 DeleteIngredient(IngredientsType food[], int *count)
 {
-	//Check for infinite loops if a char is inputted on an int value
 	int i, input;
 
 	printf("[----------Delete Ingredient----------]\n");
@@ -333,13 +412,21 @@ DeleteIngredient(IngredientsType food[], int *count)
 				printf("Selected ingredient does not exist! Try again: ");
 		} while (!(input>=1 && input<=*count));
 		
+		//Deletes a food struct, and adjusts all the current values to the right.
 		DeleteStructFood(food, *count, input);
+		
+		//Decrements total ingredient count.
 		(*count)--;
 	}
 	else
 		printf("Insufficient items to Delete!\n");
 	printf("\n");
 }
+
+/* DeleteStep allows users to delete an instruction on the a given recipe.
+   
+   @param *dish - Contains a specific dish from the recipe dish array. 
+*/
 
 void
 DeleteStep(DishType *dish)
@@ -361,6 +448,7 @@ DeleteStep(DishType *dish)
 				printf("Selected step does not exist! Try again: ");
 		} while(!(input>=1 && input<=dish->insCount));
 		
+		//A function that deletes a specific array
 		DeleteArr(dish->instructions, dish->insCount, input);
 		dish->insCount--;
 	}
@@ -369,8 +457,49 @@ DeleteStep(DishType *dish)
 	printf("\n");
 }
 
+/* DeleteRecipes allows users to delete a recipe dish struct 
+   on the given recipe dish struct array.
+   
+   @param *dish - Contains a specific dish from the recipe dish array. 
+*/
+
 void 
-ModifyRecipe(DishType dish[], IngredientsType food[], int foodRow, int dishRow)
+DeleteRecipes(DishType dish[], 
+			  int *row)
+{
+	String20 key;
+	int found;
+	
+	ListRecipeTitles(dish, *row);
+	printf("Enter a recipe to Remove: ");
+	getString20(key);
+	
+	found = RecipeTitleExists(dish, key, *row);
+	
+	if (found != -1)
+	{
+		DeleteStructDish(dish, *row, found);
+		(*row)--;
+	}
+	else
+		printf("Recipe not found!\n");
+	printf("\n");
+}
+
+/* ModifyRecipe displays and allows users to choose a given modification option
+   (e.g., AddStep, AddIngredient, DeleteStep, DeleteIngredient).
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param food - Contains a food/ingredient struct array of max size 50.
+   @param foodRow - Contains the current size of food row.
+   @param dishRow - Contains the current size of dish row.
+*/
+
+void 
+ModifyRecipe(DishType dish[], 
+			 IngredientsType food[], 
+			 int foodRow, 
+			 int dishRow)
 {
 	String20 dishName;
 	int choice, found;
@@ -431,28 +560,12 @@ ModifyRecipe(DishType dish[], IngredientsType food[], int foodRow, int dishRow)
 	}
 }
 
-void 
-DeleteRecipes(DishType dish[], 
-			  int *row)
-{
-	String20 key;
-	int found;
-	
-	ListRecipeTitles(dish, *row);
-	printf("Enter a recipe to Remove: ");
-	getString20(key);
-	
-	found = RecipeTitleExists(dish, key, *row);
-	
-	if (found != -1)
-	{
-		DeleteStructDish(dish, *row, found);
-		(*row)--;
-	}
-	else
-		printf("Recipe not found!\n");
-	printf("\n");
-}
+/* ListRecipeTitles displays all the recipes currrently available in the recipe/dish
+   struct array.
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
 
 void 
 ListRecipeTitles(DishType dish[], 
@@ -467,6 +580,13 @@ ListRecipeTitles(DishType dish[],
 		printf("%d. %s\n", i+1, dish[i].dishName);
 	printf("\n");
 }
+
+/* SearchRecipeTitle displays and asks for user input about which recipe to display
+   all the information about (e.g., ingredients, steps, calories).
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
 
 void 
 SearchRecipeTitle(DishType dish[], 
@@ -488,6 +608,13 @@ SearchRecipeTitle(DishType dish[],
 	printf("\n");
 }
 
+/* ScanRecipes displays all recipe information per dish in a page by page 
+   manner (e.g., Page 1: Adobo, Page 2: Sinigang, etc.).
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
+
 void
 ScanRecipes(DishType dish[], 
 			int row) //Displays each recipe one at a time
@@ -501,12 +628,11 @@ ScanRecipes(DishType dish[],
 	
 	do 
 	{	
-		printf("[N] Next Page [P] Previous Page [X] Return to Menu ");
 		myCharInput(&ch);
 		if (ch == 'N' && i<row)
 		{
 			i++;
-			if (i!=row)
+			if (i != row)
 				ViewRecipe(dish[i]);
 		}
 		else if (ch == 'P' && i>0)
@@ -521,7 +647,76 @@ ScanRecipes(DishType dish[],
 	  			if (ch != 'X')
 	  				printf("Invalid Input! Try another input: ");
 	} while (ch != 'X' && i<row);
+	
+	printf("\n");
 }
+
+/* ScanRecipesByIngredient displays all recipe information per dish in a 
+   page by page, with the condition that it will only display the recipe/dish 
+   based on the inputted ingredient.
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
+
+void
+ScanRecipesByIngredient(DishType dish[], 
+						int row)
+{
+	int i = 0, found;
+	char ch;
+	String20 ingredient;
+	
+	printf("[----------Scan Recipes By Title----------]\n");
+	printf("Search Ingredient: ");
+	SortAlphabetical(dish, row);
+	getString20(ingredient);	
+	printf("\n");
+	
+	found = FindRecipeFromStart(dish, ingredient, i, row);
+		
+	if (found != -1)
+	{
+		i = found;
+		do
+		{				
+			if (i != row)
+				ViewRecipe(dish[i]);
+			myCharInput(&ch);
+		
+			if (ch == 'N')
+			{
+				/* Incorporates a search algorithm with n, such that i=n is 
+				added or subtracted (refer to third parameter) for algorithm to 
+				check the next list of scan recipes */
+				found = FindRecipeFromStart(dish, ingredient, i+1, row);
+			
+				if (found != -1)
+					i = found;
+			}
+			else if (ch == 'P' && i>=0)
+			{
+				found = FindRecipeFromEnd(dish, ingredient, i-1);
+			
+				if (found != -1)
+					i = found;
+			}
+			else
+				if (ch != 'X')
+	  				printf("Invalid Input! Try another input: ");
+	  			
+		} while (ch != 'X' && (ch != 'P' && found != -1));
+	}	
+	printf("\n");
+}
+
+/* GenerateShoppingList displays a shopping list based on the inputted recipe.
+   Recomputes the ingredient information based on the original serving size
+   of the recipe and the "new" serving size of the recipe.
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
 
 void
 GenerateShoppingList(DishType dish[], int row)
@@ -555,7 +750,7 @@ GenerateShoppingList(DishType dish[], int row)
 		{
 			printf("%s ", dish[found].ingredients[i].item); 
 			printf("%g ", dish[found].ingredients[i].quantity * ratio);
-			printf("%.1g\n", dish[found].ingredients[i].calories * ratio);
+			printf("%g\n", dish[found].ingredients[i].calories * ratio);
 		}
 	}
 	else
@@ -576,59 +771,15 @@ RecommendMenu()
 	//<=calories;
 }
 
-void
-ScanRecipesByIngredient(DishType dish[], 
-						int row)
-{
-	int i = 0, found;
-	char ch;
-	String20 ingredient;
-	
-	printf("[----------Scan Recipes By Title----------]\n");
-	printf("Search Ingredient: ");
-	SortAlphabetical(dish, row);
-	getString20(ingredient);	
-	printf("\n");
-	
-	if (CheckIngredient(dish[i], ingredient, dish[i].ingCount))
-		ViewRecipe(dish[i]);
-	else
-	{
-		found = FindRecipeFromStart(dish, ingredient, i, row);
-		
-		if (found != -1)
-			i = found;
-	}
-			
-	do
-	{		
-		ViewRecipe(dish[i]);
-		printf("[N] Next Page [P] Previous Page [X] Return to Menu ");
-		myCharInput(&ch);
-		
-		if (ch == 'N')
-		{
-			found = FindRecipeFromStart(dish, ingredient, i+1, row);
-			
-			if (found != -1)
-				i = found;
-		}
-		else if (ch == 'P' && i>=0)
-		{
-			found = FindRecipeFromEnd(dish, ingredient, i-1);
-			
-			if (found != -1)
-				i = found;
-		}
-		else
-			if (ch != 'X')
-	  			printf("Invalid Input! Try another input: ");
-	  			
-	} while ((ch == 'N' || ch == 'P') && ch != 'X' && i != -1);
-}
-
+/* ExportRecipes saves all the recipes currently with dish struct array in a
+   text file.
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
 void 
-ExportRecipes(DishType dish[], int *row)
+ExportRecipes(DishType dish[], 
+			  int row)
 {
 	FILE *fp_save;
 	String20 fileName;
@@ -640,11 +791,11 @@ ExportRecipes(DishType dish[], int *row)
 	
 	fp_save = fopen(fileName, "w");
 
-	if (fp_save == NULL || *row == 0)
+	if (fp_save == NULL || row == 0)
 		printf("No data is detected to be saved!\n");
 	else
 	{
-		for (i=0; i<*row; i++)
+		for (i=0; i<row; i++)
 		{
       		fprintf(fp_save, "%s\n", dish[i].dishName);
 	  		fprintf(fp_save, "%d %s\n", dish[i].serving, dish[i].classification);
@@ -657,8 +808,20 @@ ExportRecipes(DishType dish[], int *row)
 	printf("\n");
 }
 
+/* ImportRecipes loads all the recipes from text file to the dish struct
+   array. Consider that for each recipe to be loaded, user is prompted if
+   they will use the ingredient/measurements of an ingredient in the current
+   food calorie count or will they use the measurements from the exported
+   recipe.
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
 void
-ImportRecipes(DishType dish[], int *row)
+ImportRecipes(DishType dish[], 
+			  IngredientsType food[],
+			  int *dishRow,
+			  int foodRow)
 {
 	FILE *fp_load;
 	String20 fileName, sBuff;
@@ -677,19 +840,19 @@ ImportRecipes(DishType dish[], int *row)
 		printf("ERROR: No file detected!\n");
 	else
 	{
-		while (getFileString20(dish[*row].dishName, fp_load) != -1)
+		while (getFileString20(dish[*dishRow].dishName, fp_load) != -1)
 		{
-			if (DuplicateDish(dish, *row) != -1)
+			if (DuplicateDish(dish, *dishRow) == -1) //If there is no duplicate dish.
 			{
-				if (fscanf(fp_load, "%d%s%s%d", &dish[*row].serving, 
-								   		  		dish[*row].classification, 
+				if (fscanf(fp_load, "%d%s%s%d", &dish[*dishRow].serving, 
+								   		  		dish[*dishRow].classification, 
 								   		  		sBuff,
-												&dish[*row].ingCount) == 4)
+												&dish[*dishRow].ingCount) == 4)
 				{		
-					ReadIngredients(fp_load, &dish[*row]);
-					fscanf(fp_load, "%s%d ", sBuff, &dish[*row].insCount);
-					ReadSteps(fp_load, &dish[*row]);						
-					(*row)++;	
+					ReadIngredients(fp_load, &dish[*dishRow], food, foodRow);
+					fscanf(fp_load, "%s%d ", sBuff, &dish[*dishRow].insCount);
+					ReadSteps(fp_load, &dish[*dishRow]);						
+					(*dishRow)++;	
 				}
 			}
 			/*else
