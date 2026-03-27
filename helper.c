@@ -118,26 +118,67 @@ loadAccount(String20 username, String20 password)
      
    @param username is the variable where the username inputted by the user is stored.
    @param password is the variable where the password inputted by the user is stored.
+   @return 0 if username or password is wrong and return 1 if both username and password matches.
 */
 int 
-loginPage(String20 username, String20 password)
+loginPage(String20 username, 
+		  String20 password)
 {
     String20 userInput;
     String20 userPassword;
+    char buffer;
     
     printf("[----------Login Page----------]\n");
     printf("Enter username: ");
     scanf("%s", userInput);
     printf("Enter Password: ");
-    scanf("%s", userPassword);
+    scanf("%s%c", userPassword, &buffer);
     
     if (strcmp(userInput, username) != 0 || strcmp(userPassword, password) != 0)
 	{
         printf("Invalid username or password.\n");
         return 0;
     }
+    printf("\n");
     
     return 1;
+}
+
+/* ChangePassword allows user to "change" the password on the text file.
+     
+   @param username is the variable where the username inputted by the user is stored.
+   @param password is the variable where the password inputted by the user is stored.
+*/
+
+void 
+ChangePassword(String20 username, 
+			   String20 password)
+{
+	FILE *fp;
+	String20 fileName = "admin.txt",
+			 userPassword;
+	int status;
+	char buffer;
+	
+	printf("[----------Admin Page----------]\n");
+	//Reasks user to login to check if the person changing the password is the actual "admin."
+	status = loginPage(username, password);
+	if (status == 1)
+	{
+		if ((fp = fopen(fileName, "w")) != NULL)
+		{
+			printf("Enter New Password: ");
+			scanf("%s%c", userPassword, &buffer);
+			
+			fprintf(fp, "%s\n", username);
+			fprintf(fp, "%s", userPassword);
+			fclose(fp);
+		}
+		else
+			printf("File not found!\n");
+	}
+	
+	printf("\n");
 }
 
 /* getString70 allows user to input "multiple words" with the given array string
@@ -218,7 +259,6 @@ getFileString20(String20 string,
 			i++;
 		}
 	} while (i<20 && ch != '\n' && eof != EOF);
-	
 	string[i] = '\0';
 	
 	return eof;
@@ -314,7 +354,7 @@ DisplayFood(IngredientsType food[],
 	   Second condition implies that the actual number of items to display is n.
 	*/
 	for (i=page*10; i<10*(page+1) && i < row; i++)
-	  	printf("%s %g %s %d\n", food[i].item, food[i].quantity, food[i].unit, food[i].calories);
+	  	printf("%-20s %4g %3s %4d %3s\n", food[i].item, food[i].quantity, food[i].unit, food[i].calories, "kCal");
 	printf("\n");
 	printf("Page: %d [N] Next Page [P] Previous Page [X] Return to Menu ", page+1);
 }
@@ -484,7 +524,7 @@ ViewRecipe(DishType dish)
 	printf("Name: %s\n", dish.dishName);
 	printf("Classification: %s\n", dish.classification);
 	printf("Serving size: %d\n", dish.serving);
-	printf("Total Calories: %d\n\n", ComputeCalories(dish) * dish.serving);
+	printf("Total Calories: %d\n\n", ComputeCalories(dish));
 
 	printf("Ingredients\n");
 	for (i=0; i<dish.ingCount; i++)
@@ -629,16 +669,15 @@ SaveSteps(FILE *fp,
 }
 
 int 
-FindCalorie(DishType dish, 
+FindCalorie(String20 dishItem, 
 			IngredientsType food[],
 			int row)
 {
-	int i, j, found = -1;
+	int i, found = -1;
 	
-	for (i=0; i<dish.ingCount && found == -1; i++)	
-		for (j=0; j<row && found == -1; j++)
-			if (dish.ingredients[i].item == food[j].item)
-				found = dish.ingredients[i].calories; 
+	for (i=0; i<row && found == -1; i++)	
+		if (strcmp(dishItem, food[i].item) == 0)
+			found = food[i].calories; 
 	
 	if (found == -1)
 		return 0;
@@ -668,10 +707,26 @@ ReadIngredients(FILE *fp,
 							 dish->ingredients[i].unit);
 		getFileString20(dish->ingredients[i].item, fp);
 		
-		dish->ingredients[i].calories = FindCalorie(*dish, food, row);
+		dish->ingredients[i].calories = FindCalorie(dish->ingredients[i].item, food, row);
 	}
 }
 		
+void 
+ReadBuffIngredients(FILE *fp,
+					int count)
+{
+	int i;
+	String20 sBuff20;
+	String15 sBuff15;
+	float fBuff;
+	
+	for (i=0; i<count; i++)
+	{
+		fscanf(fp, "%f%s ", &fBuff, sBuff15);
+		getFileString20(sBuff20, fp);
+	}
+}
+
 void
 ReadSteps(FILE *fp, 
 		  DishType *dish)
@@ -681,3 +736,15 @@ ReadSteps(FILE *fp,
 	for (i=0; i<dish->insCount; i++)
 		getFileString70(dish->instructions[i], fp);
 }
+
+void
+ReadBuffSteps(FILE *fp,
+			  int count)
+{                                 
+	int i; 
+	String70 instructions;
+	
+	for (i=0; i<count; i++)
+		getFileString70(instructions, fp);
+}
+

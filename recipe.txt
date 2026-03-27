@@ -1,5 +1,5 @@
 Pork Adobo
-5 Main
+5 main
 Ingredients 3
 500 g Pork Belly
 1 cup Soy Sauce
@@ -11,7 +11,7 @@ Thicken the sauce.
 Serve with rice.
 
 Saging Saba
-5 Dessert
+5 dessert
 Ingredients 2
 3 pcs Banana
 5 cup Brown Sugar
@@ -21,7 +21,7 @@ Add sliced bananas.
 Cook until soft.
 
 Itlog na Maalat
-3 Starter
+3 starter
 Ingredients 2
 2 pcs Salted Egg
 2 pcs Tomato

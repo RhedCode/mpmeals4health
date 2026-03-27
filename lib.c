@@ -148,7 +148,7 @@ LoadCalories(IngredientsType food[], int *row)
 	
 	printf("[----------Load Food Calorie----------]\n");
 	printf("Enter a text file name: ");
-	scanf("%s", fileName);
+	scanf("%s%c", fileName, &ch);
 	
 	fp_load = fopen(fileName, "r");
 	
@@ -163,9 +163,9 @@ LoadCalories(IngredientsType food[], int *row)
 			if ((dupe = DuplicateFood(food, *row)) == -1)
 			{
 				//Reads other food details (e.g. quantity, unit, and calories).
-				if (fscanf(fp_load, "%f%s%d ", &food[*row].quantity, 
-								   		  	   food[*row].unit, 
-								   		  	  &food[*row].calories) == 3)
+				if (fscanf(fp_load, "%f%s%d ", 	&food[*row].quantity, 
+								   		  	    food[*row].unit, 
+								   		  		&food[*row].calories) == 3)
 					(*row)++;
 			}
 			//Checks if food is not unique (e.g. index of original food).
@@ -173,11 +173,10 @@ LoadCalories(IngredientsType food[], int *row)
 			{
 				printf("[Y/N] Do you wish to overwrite this data?\n");
 				printf("Ingredient Duplicate: %s\n", food[*row].item);
-
+				
 				do
 				{
 					myCharInput(&ch);
-
 					if (ch != 'Y' && ch != 'N')
 						printf("[Invalid] Enter another input: ");
 				} while (ch != 'Y' && ch != 'N');
@@ -187,9 +186,9 @@ LoadCalories(IngredientsType food[], int *row)
 				{
 					strcpy(food[dupe].item, food[*row].item);
 					strcpy(food[*row].item, "");
-					fscanf(fp_load, "%f%s%d ", &food[dupe].quantity, 
-										  	  food[dupe].unit, 
-										  	  &food[dupe].calories);
+					fscanf(fp_load, "%f%s%d ", 	&food[dupe].quantity, 
+										  	   	food[dupe].unit, 
+										  	   	&food[dupe].calories);
 				}
 				else
 				{
@@ -502,60 +501,59 @@ ModifyRecipe(DishType dish[],
 			 int dishRow)
 {
 	String20 dishName;
-	int choice, found;
+	int choice, found, exit = 0;
 	
 	if (dishRow>0)
 	{
-		printf("[----------Modify Recipe----------]\n");
-		ListRecipeTitles(dish, dishRow);
-
-		printf("Enter a Dish Name: ");
-		do 
+		while (!exit)
 		{
-			getString20(dishName);
+			printf("[----------Modify Recipe----------]\n");
+			ListRecipeTitles(dish, dishRow);
+
+			printf("Enter a Dish Name: ");
+			do 
+			{
+				getString20(dishName);
 		
-			found = RecipeTitleExists(dish, dishName, dishRow);
-			if (found == -1)
-				printf("Recipe Title does not Exist! Try again: ");
-		} while (found == -1);
+				found = RecipeTitleExists(dish, dishName, dishRow);
+				if (found == -1)
+					printf("Recipe Title does not Exist! Try again: ");
+			} while (found == -1);
 	
-		printf("[Recipe to Modify] %s\n", dishName);
-		printf("[1] Add Ingredient\n");
-		printf("[2] Delete Ingredient\n");
-		printf("[3] Add Step\n");
-		printf("[4] Delete Step\n");
-		printf("[5] Return to Update Recipe Box Menu\n");
-		printf("\n");
-		printf("Input an Option: ");
+			printf("[Recipe to Modify] %s\n", dishName);
+			printf("[1] Add Ingredient\n");
+			printf("[2] Delete Ingredient\n");
+			printf("[3] Add Step\n");
+			printf("[4] Delete Step\n");
+			printf("[5] Return to Update Recipe Box Menu\n");
+			printf("Input an Option: ");
 
-		do
-		{
-			myIntInput(&choice);
+			do
+			{
+				myIntInput(&choice);
 
-			if (choice < 1 || choice > 5)
-				printf("[Invalid] Enter another option: ");
-		} while (choice < 1 && choice > 5);
+				if (choice < 1 || choice > 5)
+					printf("[Invalid] Enter another option: ");
+			} while (choice < 1 && choice > 5);
 
-		switch (choice)
-		{
-			case 1:
-				AddIngredient(&dish[found], food, foodRow);
-				ModifyRecipe(dish, food, foodRow, dishRow);
-				break;
-			case 2:
-				DeleteIngredient(dish[found].ingredients, &dish[found].ingCount);
-				ModifyRecipe(dish, food, foodRow, dishRow);
-				break;
-			case 3:
-				AddStep(&dish[found]);
-				ModifyRecipe(dish, food, foodRow, dishRow);
-				break;
-			case 4:
-				DeleteStep(&dish[found]);
-				ModifyRecipe(dish, food, foodRow, dishRow);
-				break;
-			default:
-				break;
+			switch (choice)
+			{
+				case 1:
+					AddIngredient(&dish[found], food, foodRow);	
+					break;
+				case 2:
+					DeleteIngredient(dish[found].ingredients, &dish[found].ingCount);
+					break;
+				case 3:
+					AddStep(&dish[found]);
+					break;
+				case 4:
+					DeleteStep(&dish[found]);
+					break;
+				default:
+					exit = 1;
+					break;
+			}
 		}
 	}
 }
@@ -593,6 +591,7 @@ SearchRecipeTitle(DishType dish[],
 				  int row)
 {
 	String20 name;
+	char buff;
 	int found;
 
 	ListRecipeTitles(dish, row);
@@ -605,6 +604,9 @@ SearchRecipeTitle(DishType dish[],
 		ViewRecipe(dish[found]);
 	else
 		printf("Not found!\n");
+	
+	printf("Press any key to continue... ");
+	myCharInput(&buff);
 	printf("\n");
 }
 
@@ -617,13 +619,15 @@ SearchRecipeTitle(DishType dish[],
 
 void
 ScanRecipes(DishType dish[], 
-			int row) //Displays each recipe one at a time
+			int row,
+			int sort) //Displays each recipe one at a time
 {
 	int i = 0;
 	char ch;
 	
 	printf("[----------Scan Recipes----------]\n");
-	SortAlphabetical(dish, row);
+	if (sort)
+		SortAlphabetical(dish, row);
 	ViewRecipe(dish[i]);
 	
 	do 
@@ -705,7 +709,7 @@ ScanRecipesByIngredient(DishType dish[],
 				if (ch != 'X')
 	  				printf("Invalid Input! Try another input: ");
 	  			
-		} while (ch != 'X' && (ch != 'P' && found != -1));
+		} while (ch != 'X' && found != -1);
 	}	
 	printf("\n");
 }
@@ -743,14 +747,15 @@ GenerateShoppingList(DishType dish[], int row)
 		
 		printf("Input a serving size: ");
 		myIntInput(&size);
-		ratio = size/dish[found].serving;
+		ratio = size*1.0/dish[found].serving;
 		
 		printf("Recipe: %s\n", dish[found].dishName);
 		for (i=0; i<dish[found].ingCount; i++)
 		{
-			printf("%s ", dish[found].ingredients[i].item); 
-			printf("%g ", dish[found].ingredients[i].quantity * ratio);
-			printf("%g\n", dish[found].ingredients[i].calories * ratio);
+			printf("%-20s ", dish[found].ingredients[i].item); 
+			printf("%5.2f ", dish[found].ingredients[i].quantity * ratio);
+			printf("%4s ", dish[found].ingredients[i].unit);
+			printf("%5.2f\n", dish[found].ingredients[i].calories * ratio);
 		}
 	}
 	else
@@ -760,15 +765,87 @@ GenerateShoppingList(DishType dish[], int row)
 	myCharInput(&ch);
 }
 
+/* RecommendedMenu displays a the recommended courses that is under or equal to the target calorie
+   intake. The order of recommendation are as follows: main, starter, then dessert. If the main
+   course does not fully expend all the calories, then the succeeding courses will check if there
+   is a dish that can still "eat" up those remaining calories.
+   
+   @param dish - Contains a recipe/dish struct array of max size 50.
+   @param dishRow - Contains the current size of dish row.
+*/
+
 void
-RecommendMenu()
+RecommendedMenu(DishType dish[],
+				int row)
 {
-	int calorie;
+	DishType recommendation[SIZE];
+	int i, 
+		temp[SIZE],
+		tempCount, 
+		recoCount = 0, 
+		random, 
+		calorie;
 	
 	printf("[----------Recommended Menu----------]\n");
+	printf("Target Calorie Intake: ");
+	srand(time(NULL));
 	myIntInput(&calorie);
 	
-	//<=calories;
+	//Checks for main dishes under or equal to the calorie intake
+	tempCount = 0;
+	for (i=0; i<row; i++)
+		if (ComputeCalories(dish[i]) <= calorie && 
+			strcmp(dish[i].classification, "main") == 0)
+		{
+			temp[tempCount] = i;
+			tempCount++;
+		}
+	
+	if (tempCount > 0)
+	{
+		random = rand() % tempCount;
+		recommendation[recoCount] = dish[temp[random]];
+		calorie -= ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		recoCount++;
+	}
+	
+	//Checks for starter dishes under or equal to the calorie intake
+	tempCount = 0; //Resets temp count
+	for (i=0; i<row; i++)
+		if (ComputeCalories(dish[i]) <= calorie && 
+			strcmp(dish[i].classification, "starter") == 0)
+		{
+			temp[tempCount] = i;
+			tempCount++;
+		}
+		
+	if (tempCount > 0)
+	{
+		random = rand() % tempCount; //Range of random from 0 to tempCount
+		recommendation[recoCount] = dish[temp[random]];
+		calorie -= ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		recoCount++;
+	}
+	
+	//Checks for dessert dishes under or equal to the calorie intake
+	tempCount = 0;
+	for (i=0; i<row; i++)
+		if (ComputeCalories(dish[i]) <= calorie && 
+			strcmp(dish[i].classification, "dessert") == 0)
+		{
+			temp[tempCount] = i;
+			tempCount++;
+		}
+		
+	if (tempCount > 0)
+	{
+		random = rand() % tempCount;
+		recommendation[recoCount] = dish[temp[random]];
+		calorie -= ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		recoCount++;
+	}
+	
+	ScanRecipes(recommendation, recoCount, 0);
 }
 
 /* ExportRecipes saves all the recipes currently with dish struct array in a
@@ -832,7 +909,7 @@ ImportRecipes(DishType dish[],
 	printf("[----------Import Recipes----------]\n");
 	
 	printf("Enter a text file name: ");
-	scanf("%s", fileName);
+	scanf("%s%c", fileName, &ch);
 	
 	fp_load = fopen(fileName, "r");
 	
@@ -842,25 +919,26 @@ ImportRecipes(DishType dish[],
 	{
 		while (getFileString20(dish[*dishRow].dishName, fp_load) != -1)
 		{
-			if (DuplicateDish(dish, *dishRow) == -1) //If there is no duplicate dish.
+			//If there is no duplicate dish.
+			if ((dupe = DuplicateDish(dish, *dishRow)) == -1)
 			{
 				if (fscanf(fp_load, "%d%s%s%d", &dish[*dishRow].serving, 
 								   		  		dish[*dishRow].classification, 
 								   		  		sBuff,
 												&dish[*dishRow].ingCount) == 4)
 				{		
+					toLower(dish[*dishRow].classification);
 					ReadIngredients(fp_load, &dish[*dishRow], food, foodRow);
 					fscanf(fp_load, "%s%d ", sBuff, &dish[*dishRow].insCount);
 					ReadSteps(fp_load, &dish[*dishRow]);						
 					(*dishRow)++;	
 				}
 			}
-			/*else
+			else
 			{
 				printf("[Y/N] Do you wish to overwrite this data?\n");
-				printf("Ingredient Duplicate: %s\n", food[*row].item);
-				scanf("%c", &ch);
-				dupe = DuplicateFood(food, *row);
+				printf("Ingredient Duplicate: %s\n", dish[*dishRow].dishName);
+				
 				do
 				{
 					myCharInput(&ch);
@@ -871,23 +949,36 @@ ImportRecipes(DishType dish[],
 				
 				if (ch == 'Y')
 				{
-					strcpy(food[dupe].item, food[*row].item);
-					strcpy(food[*row].item, "");
-					fscanf(fp_load, "%d%s%d", &food[dupe].quantity, 
-										  	  food[dupe].unit, 
-										  	  &food[dupe].calories);
+					strcpy(dish[dupe].dishName, dish[*dishRow].dishName);
+					strcpy(dish[*dishRow].dishName, "");
+					
+					if (fscanf(fp_load, "%d%s%s%d", &dish[dupe].serving, 
+								   		  			dish[dupe].classification, 
+								   		  			sBuff,
+													&dish[dupe].ingCount) == 4)
+					{
+						toLower(dish[dupe].classification);
+						ReadIngredients(fp_load, &dish[dupe], food, foodRow);
+						fscanf(fp_load, "%s%d ", sBuff, &dish[dupe].insCount);
+						ReadSteps(fp_load, &dish[dupe]);
+					}
 				}
 				else
 				{
-					strcpy(food[*row].item, "");
-					fscanf(fp_load, "%d%s%d", &nBuff, sBuff, &nBuff);
+					strcpy(dish[*dishRow].dishName, "");
+					
+					if (fscanf(fp_load, "%d%s%s%d", &nBuff, 
+								   		  			sBuff, 
+								   		  			sBuff,
+													&nBuff) == 4)
+					{
+						ReadBuffIngredients(fp_load, dish[*dishRow].ingCount);
+						fscanf(fp_load, "%s%d", sBuff, &nBuff);	
+						ReadBuffSteps(fp_load, dish[*dishRow].insCount);
+					}
 				}
 			}
-		}*/
 		}
-		scanf("%c", &ch);
-		//if (dupe == -1)
-			//scanf("%c", &ch);
 		fclose(fp_load);
 	}
 	printf("\n");

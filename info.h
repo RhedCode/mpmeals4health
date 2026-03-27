@@ -76,36 +76,36 @@ void AddStep(DishType *dish);
 void DeleteIngredient(IngredientsType food[], int *count);
 void DeleteStep(DishType *dish);
 void DeleteRecipes(DishType dish[], int *row);
-void ModifyRecipe(DishType dish[], IngredientsType food[], int foodRow, int recipeRow);
+void ModifyRecipe(DishType dish[], IngredientsType food[], int foodRow, int dishRow);
 void ListRecipeTitles(DishType dish[], int row);
 void SearchRecipeTitle(DishType dish[], int row);
-void ScanRecipes(DishType dish[], int row);
+void ScanRecipes(DishType dish[], int row, int sort);
 void ScanRecipesByIngredient(DishType dish[], int row);
 void GenerateShoppingList(DishType dish[], int row);
-void RecommendMenu();
+void RecommendedMenu(DishType dish[], int row);
 void ExportRecipes(DishType dish[], int row);
 void ImportRecipes(DishType dish[], IngredientsType food[], int *dishRow, int foodRow);
 
-void 
+int 
 Menu(DishType dish[], 
 	 IngredientsType food[], 
-	 int dishRow, 
-	 int foodRow, 
+	 int *dishRow, 
+	 int *foodRow, 
 	 String20 username,
-	 String20 password);
+	 String20 password,
+	 int *status);
 	 
 void
 Update(DishType dish[], 
 	   IngredientsType food[], 
-	   int dishRow, 
-	   int foodRow, 
+	   int *dishRow, 
+	   int *foodRow, 
 	   String20 username,
-	   String20 password);
+	   String20 password,
+	   int *status);
 	   
 void
 Access(DishType dish[], 
 	   IngredientsType food[], 
-	   int dishRow, 
-	   int foodRow, 
-	   String20 username,
-	   String20 password);
+	   int *dishRow, 
+	   int foodRow);

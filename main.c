@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "lib.c"
 
@@ -25,166 +27,168 @@ AT MOST 50 Food items
 void
 Access(DishType dish[], 
 	   IngredientsType food[], 
-	   int dishRow, 
-	   int foodRow,
-	   String20 username,
-	   String20 password)
+	   int *dishRow, 
+	   int foodRow)
 {
-	int input;
-	printf("[----------Access Menu----------]\n");
-	printf("[1] Import Recipes\n");
-	printf("[2] List Recipe Titles\n");
-	printf("[3] Scan Recipes\n");
-	printf("[4] Search Recipe by Title\n");
-	printf("[5] Generate Shopping List\n");  
-    printf("[6] Scan Recipes by Ingredient\n");
-    printf("[7] Recommended Menu\n");
-    printf("[8] Return to Main Menu\n");
-    printf("Input your choice: ");
-    do 
-	{
-		myIntInput(&input);
-		if (input < 1 || input > 8)
-			printf("[Invalid] Enter another option: ");
-	} while (input < 1 || input > 8);
-	printf("\n");
+	int input, exit = 0;
 	
-	switch (input)
+	while (!exit)
 	{
-		case 1:
-			ImportRecipes(dish, food, &dishRow, foodRow);
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 2:
-			ListRecipeTitles(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 3: 
-			ScanRecipes(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 4:
-			SearchRecipeTitle(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 5:
-			GenerateShoppingList(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 6:
-			ScanRecipesByIngredient(dish, dishRow);
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 7:
-			
-			Access(dish, food, dishRow, foodRow, username, password);
-			break;
-		default:
-			Menu(dish, food, dishRow, foodRow, username, password);
-			break;
+		printf("[----------Access Menu----------]\n");
+		printf("[1] Import Recipes\n");
+		printf("[2] List Recipe Titles\n");
+		printf("[3] Scan Recipes\n");
+		printf("[4] Search Recipe by Title\n");
+		printf("[5] Generate Shopping List\n");  
+    	printf("[6] Scan Recipes by Ingredient\n");
+    	printf("[7] Recommended Menu\n");
+    	printf("[8] Return to Main Menu\n");
+    	printf("Input your choice: ");
+    	do 
+		{
+			myIntInput(&input);
+			if (input < 1 || input > 8)
+				printf("[Invalid] Enter another option: ");
+		} while (input < 1 || input > 8);
+		printf("\n");
+	
+		switch (input)
+		{
+			case 1:
+				ImportRecipes(dish, food, dishRow, foodRow);
+				break;
+			case 2:
+				ListRecipeTitles(dish, *dishRow);
+				break;
+			case 3: 
+				ScanRecipes(dish, *dishRow, 1);
+				break;
+			case 4:
+				SearchRecipeTitle(dish, *dishRow);
+				break;
+			case 5:
+				GenerateShoppingList(dish, *dishRow);
+				break;
+			case 6:
+				ScanRecipesByIngredient(dish, *dishRow);
+				break;
+			case 7:
+				RecommendedMenu(dish, *dishRow);
+				break;
+			default:
+				exit = 1;
+				break;
+		}
 	}
 }
 
 void
 Update(DishType dish[], 
 	   IngredientsType food[], 
-	   int dishRow, 
-	   int foodRow, 
+	   int *dishRow, 
+	   int *foodRow, 
 	   String20 username,
-	   String20 password)
+	   String20 password,
+	   int *status)
 {
-    int input; //status = 0;
-    //loadAccount(username, password);
-    //status = loginPage(username, password);
+    int input, exit = 0;
     
-    //if (status==0) Menu(dish, food, dishRow, foodRow, foodPage, username, password);
+    while (!exit)
+    {
+    	loadAccount(username, password);
+    	if (*status == 0) 
+    	{
+    		*status = loginPage(username, password);
+    		if (*status == 0)
+				exit = 1;
+		}
     
-    printf("[----------Update Menu----------]\n");
-    printf("[1] Add Food-Calorie Info\n");
-	printf("[2] View Food-Calorie Chart\n");
-	printf("[3] Save Calorie Info\n");
-	printf("[4] Load Calorie Info\n");
-	printf("[5] Add Recipe\n");  
-    printf("[6] Modify Recipe\n");
-    printf("[7] Delete Recipe\n");
-    printf("[8] List Recipe Titles\n");
-    printf("[9] Scan Recipes\n");
-    printf("[10] Search Recipe by Title\n");
-    printf("[11] Export Recipes\n");
-    printf("[12] Import Recipes\n");
-    printf("[13] Return to Main Menu\n");
-    printf("Input your choice: ");
-    do 
-	{
-		myIntInput(&input);
-		if (input < 1 || input > 13)
-			printf("[Invalid] Enter another option: ");
-	} while (input < 1 || input > 13);
-	printf("\n");
+    	if (exit != 1)
+    	{
+    		printf("[----------Update Menu----------]\n");
+    		printf("[1] Add Food-Calorie Info\n");
+			printf("[2] View Food-Calorie Chart\n");
+			printf("[3] Save Calorie Info\n");
+			printf("[4] Load Calorie Info\n");
+			printf("[5] Add Recipe\n");  
+    		printf("[6] Modify Recipe\n");
+    		printf("[7] Delete Recipe\n");
+    		printf("[8] List Recipe Titles\n");
+    		printf("[9] Scan Recipes\n");
+    		printf("[10] Search Recipe by Title\n");
+    		printf("[11] Export Recipes\n");
+    		printf("[12] Import Recipes\n");
+    		printf("[13] Change Password\n");
+    		printf("[14] Return to Main Menu\n");
+    		printf("Input your choice: ");
+    		do 
+			{
+				myIntInput(&input);
+				if (input < 1 || input > 14)
+					printf("[Invalid] Enter another option: ");
+			} while (input < 1 || input > 14);
+			printf("\n");
 	
-	switch (input)
-	{
-		case 1:
-			AddFoodCalorie(food, &foodRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 2:
-			ViewFood(food, foodRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 3:
-			SaveCalorie(food, foodRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 4:
-			LoadCalories(food, &foodRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 5:
-			AddRecipe(dish, food, &foodRow, &dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 6:
-			ModifyRecipe(dish, food, foodRow, dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 7: 
-			DeleteRecipes(dish, &dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 8: 
-			ListRecipeTitles(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 9:
-			ScanRecipes(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 10:
-			SearchRecipeTitle(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 11:
-			ExportRecipes(dish, dishRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		case 12:
-			ImportRecipes(dish, food, &dishRow, foodRow);
-			Update(dish, food, dishRow, foodRow, username, password);
-			break;
-		default:
-			Menu(dish, food, dishRow, foodRow, username, password);
-			break;
+			switch (input)
+			{
+				case 1:
+					AddFoodCalorie(food, foodRow);
+					break;
+				case 2:
+					ViewFood(food, *foodRow);
+					break;
+				case 3:
+					SaveCalorie(food, *foodRow);
+					break;
+				case 4:
+					LoadCalories(food, foodRow);
+					break;
+				case 5:
+					AddRecipe(dish, food, foodRow, dishRow);
+					break;
+				case 6:
+					ModifyRecipe(dish, food, *foodRow, *dishRow);
+					break;
+				case 7: 
+					DeleteRecipes(dish, dishRow);
+					break;
+				case 8: 
+					ListRecipeTitles(dish, *dishRow);
+					break;
+				case 9:
+					ScanRecipes(dish, *dishRow, 1);
+					break;
+				case 10:
+					SearchRecipeTitle(dish, *dishRow);
+					break;
+				case 11:
+					ExportRecipes(dish, *dishRow);
+					break;
+				case 12:
+					ImportRecipes(dish, food, dishRow, *foodRow);
+					break;
+				case 13:
+					ChangePassword(username, password);
+					*status = 0;
+					exit = 1;
+					break;
+				default:
+					*status = 0;
+					exit = 1;
+					break;
+			}
+		}
 	}
 }
 
-void 
+int 
 Menu(DishType dish[], 
 	 IngredientsType food[], 
-	 int dishRow, 
-	 int foodRow, 
+	 int *dishRow, 
+	 int *foodRow, 
 	 String20 username,
-	 String20 password)
+	 String20 password,
+	 int *status)
 {	
 	char input;
 
@@ -203,16 +207,18 @@ Menu(DishType dish[],
 	switch (input)
 	{
 		case 'A':
-			Access(dish, food, dishRow, foodRow, username, password);
+			Access(dish, food, dishRow, *foodRow);
 			break;
 		
 		case 'U':
-			Update(dish, food, dishRow, foodRow, username, password);
+			Update(dish, food, dishRow, foodRow, username, password, status);
 			break;
 		
 		default:
+			return 0;
 			break;
 	}
+	return 1;
 }
 
 int
@@ -222,9 +228,10 @@ main()
 	IngredientsType food[SIZE];
 	String20 username;
 	String20 password;
-    int foodRow = 0,
+    int status = 0,
+		foodRow = 0,
 		dishRow = 0;
 
-    Menu(dish, food, dishRow, foodRow, username, password);
+	while (Menu(dish, food, &dishRow, &foodRow, username, password, &status));
     return 0;
 }
