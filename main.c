@@ -67,6 +67,8 @@ Access(DishType dish[],
 				break;
 			case 2:
 				ListRecipeTitles(dish, *dishRow);
+				printf("Press any key to continue...");
+				myCharInput(&buff);
 				break;
 			case 3: 
 				ScanRecipes(dish, *dishRow, 1);
@@ -170,6 +172,8 @@ Update(DishType dish[],
 					break;
 				case 8: 
 					ListRecipeTitles(dish, *dishRow);
+					printf("Press any key to continue...");
+					myCharInput(&buff);
 					break;
 				case 9:
 					ScanRecipes(dish, *dishRow, 1);

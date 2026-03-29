@@ -638,7 +638,10 @@ ScanRecipes(DishType dish[],
 		{
 			i++;
 			if (i != row)
+			{
 				ViewRecipe(dish[i]);
+				printf("[N] Next Page [P] Previous Page [X] Return to Menu ");
+			}
 		}
 		else if (ch == 'P' && i>0)
 		{
@@ -685,8 +688,8 @@ ScanRecipesByIngredient(DishType dish[],
 		i = found;
 		do
 		{				
-			if (i != row)
-				ViewRecipe(dish[i]);
+			ViewRecipe(dish[i]);
+			printf("[N] Next Page [P] Previous Page [X] Return to Menu ");
 			myCharInput(&ch);
 		
 			if (ch == 'N')
@@ -779,7 +782,7 @@ void
 RecommendedMenu(DishType dish[],
 				int row)
 {
-	DishType recommendation[SIZE];
+	DishType recommendation[3];
 	int i, 
 		temp[SIZE],
 		tempCount, 

@@ -1,0 +1,575 @@
+[----------Food Tracker----------]
+[A] Access Recipes
+[U] Update Recipes
+[E] Exit
+
+[----------Login Page----------]
+Enter username: Enter Password: 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------Add Food Calorie----------]
+Item name: Quantity: Unit: Calories: 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------Load Food Calorie----------]
+Enter a text file name: 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------View Food Calorie----------]
+Ketchup                35 grams   35 kCal
+Banana               1000 grams 1250 kCal
+Oatmeal               3.4 grams   50 kCal
+Watermelon           20.5 grams   60 kCal
+Orange               20.6 grams   24 kCal
+Chocolate Milk        250 grams  300 kCal
+Fried Chicken         250 grams  500 kCal
+French Fries          100 grams  129 kCal
+Hotdogs                50 grams   75 kCal
+Burgers               100 grams   30 kCal
+
+Page: 1 [N] Next Page [P] Previous Page [X] Return to Menu [----------View Food Calorie----------]
+Milkshake             125 grams  225 kCal
+Ice Cream             150 grams  100 kCal
+Adobo                 150 grams  300 kCal
+
+Page: 2 [N] Next Page [P] Previous Page [X] Return to Menu 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------Add Recipe----------]
+Dish name: Classifaction of Dish [starter, main, dessert]: Number of servings: Add Ingredient: 
+[Y/N] Would you like to add more Ingredients: Add Ingredient: 
+[Y/N] Would you like to add more Ingredients: List of Instructions
+
+Modify/Add a step number: 
+[Edit] Instructions
+1. 
+[Y/N] Would you like to add more Steps: List of Instructions
+	1. Slice the banana into 5 slices.
+
+Modify/Add a step number: 
+[Edit] Instructions
+2. 
+[Y/N] Would you like to add more Steps: List of Instructions
+	1. Slice the banana into 5 slices.
+	2. Sprinkle some ketchup on top.
+
+Modify/Add a step number: 
+[Edit] Instructions
+3. 
+[Y/N] Would you like to add more Steps: 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+
+[----------Import Recipes----------]
+Enter a text file name: 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------Scan Recipes----------]
+[----------Recipe Info----------]
+Name: Banana Split
+Classification: dessert
+Serving size: 3
+Total Calories: 1285
+
+Ingredients
+	1. Banana
+		Quantity: 1000 grams
+		Calories: 1250
+	2. Ketchup
+		Quantity: 35 grams
+		Calories: 35
+Instructions
+	1. Slice the banana into 5 slices.
+	2. Sprinkle some ketchup on top.
+	3. Mix it all together.
+
+[----------Recipe Info----------]
+Name: Itlog na Maalat
+Classification: starter
+Serving size: 3
+Total Calories: 0
+
+Ingredients
+	1. Salted Egg
+		Quantity: 2 pcs
+		Calories: 0
+	2. Tomato
+		Quantity: 2 pcs
+		Calories: 0
+Instructions
+	1. Dice the eggs.
+	2. Chop the tomatoes.
+	3. Mix in a bowl.
+
+[N] Next Page [P] Previous Page [X] Return to Menu [----------Recipe Info----------]
+Name: Pork Adobo
+Classification: main
+Serving size: 5
+Total Calories: 0
+
+Ingredients
+	1. Pork Belly
+		Quantity: 500 g
+		Calories: 0
+	2. Soy Sauce
+		Quantity: 1 cup
+		Calories: 0
+	3. Vinegar
+		Quantity: 25 cup
+		Calories: 0
+Instructions
+	1. Mix all in a pot.
+	2. Boil until tender.
+	3. Thicken the sauce.
+	4. Serve with rice.
+
+[N] Next Page [P] Previous Page [X] Return to Menu [----------Recipe Info----------]
+Name: Prinitong Isda
+Classification: main
+Serving size: 3
+Total Calories: 0
+
+Ingredients
+	1. Round Scad
+		Quantity: 4 pcs
+		Calories: 0
+	2. Salt
+		Quantity: 1 tsp
+		Calories: 0
+Instructions
+	1. Rub fish with salt.
+	2. Heat oil in pan.
+	3. Fry until crispy.
+
+[N] Next Page [P] Previous Page [X] Return to Menu [----------Recipe Info----------]
+Name: Saging Saba
+Classification: dessert
+Serving size: 5
+Total Calories: 1250
+
+Ingredients
+	1. Banana
+		Quantity: 3 pcs
+		Calories: 1250
+	2. Brown Sugar
+		Quantity: 5 cup
+		Calories: 0
+Instructions
+	1. Boil sugar in water.
+	2. Add sliced bananas.
+	3. Cook until soft.
+
+[N] Next Page [P] Previous Page [X] Return to Menu 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------List Recipe Titles----------]
+1. Banana Split
+2. Itlog na Maalat
+3. Pork Adobo
+4. Prinitong Isda
+5. Saging Saba
+
+Press any key to continue...[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------List Recipe Titles----------]
+1. Banana Split
+2. Itlog na Maalat
+3. Pork Adobo
+4. Prinitong Isda
+5. Saging Saba
+
+Enter Recipe a you want to View: 
+[----------Recipe Info----------]
+Name: Banana Split
+Classification: dessert
+Serving size: 3
+Total Calories: 1285
+
+Ingredients
+	1. Banana
+		Quantity: 1000 grams
+		Calories: 1250
+	2. Ketchup
+		Quantity: 35 grams
+		Calories: 35
+Instructions
+	1. Slice the banana into 5 slices.
+	2. Sprinkle some ketchup on top.
+	3. Mix it all together.
+
+Press any key to continue... 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------List Recipe Titles----------]
+1. Banana Split
+2. Itlog na Maalat
+3. Pork Adobo
+4. Prinitong Isda
+5. Saging Saba
+
+Enter a recipe to Remove: 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------Scan Recipes----------]
+[----------Recipe Info----------]
+Name: Itlog na Maalat
+Classification: starter
+Serving size: 3
+Total Calories: 0
+
+Ingredients
+	1. Salted Egg
+		Quantity: 2 pcs
+		Calories: 0
+	2. Tomato
+		Quantity: 2 pcs
+		Calories: 0
+Instructions
+	1. Dice the eggs.
+	2. Chop the tomatoes.
+	3. Mix in a bowl.
+
+[----------Recipe Info----------]
+Name: Pork Adobo
+Classification: main
+Serving size: 5
+Total Calories: 0
+
+Ingredients
+	1. Pork Belly
+		Quantity: 500 g
+		Calories: 0
+	2. Soy Sauce
+		Quantity: 1 cup
+		Calories: 0
+	3. Vinegar
+		Quantity: 25 cup
+		Calories: 0
+Instructions
+	1. Mix all in a pot.
+	2. Boil until tender.
+	3. Thicken the sauce.
+	4. Serve with rice.
+
+[N] Next Page [P] Previous Page [X] Return to Menu [----------Recipe Info----------]
+Name: Prinitong Isda
+Classification: main
+Serving size: 3
+Total Calories: 0
+
+Ingredients
+	1. Round Scad
+		Quantity: 4 pcs
+		Calories: 0
+	2. Salt
+		Quantity: 1 tsp
+		Calories: 0
+Instructions
+	1. Rub fish with salt.
+	2. Heat oil in pan.
+	3. Fry until crispy.
+
+[N] Next Page [P] Previous Page [X] Return to Menu [----------Recipe Info----------]
+Name: Saging Saba
+Classification: dessert
+Serving size: 5
+Total Calories: 1250
+
+Ingredients
+	1. Banana
+		Quantity: 3 pcs
+		Calories: 1250
+	2. Brown Sugar
+		Quantity: 5 cup
+		Calories: 0
+Instructions
+	1. Boil sugar in water.
+	2. Add sliced bananas.
+	3. Cook until soft.
+
+[N] Next Page [P] Previous Page [X] Return to Menu 
+[----------Update Menu----------]
+[1] Add Food-Calorie Info
+[2] View Food-Calorie Chart
+[3] Save Calorie Info
+[4] Load Calorie Info
+[5] Add Recipe
+[6] Modify Recipe
+[7] Delete Recipe
+[8] List Recipe Titles
+[9] Scan Recipes
+[10] Search Recipe by Title
+[11] Export Recipes
+[12] Import Recipes
+[13] Change Password
+[14] Return to Main Menu
+Input your choice: 
+[----------Food Tracker----------]
+[A] Access Recipes
+[U] Update Recipes
+[E] Exit
+
+[----------Access Menu----------]
+[1] Import Recipes
+[2] List Recipe Titles
+[3] Scan Recipes
+[4] Search Recipe by Title
+[5] Generate Shopping List
+[6] Scan Recipes by Ingredient
+[7] Recommended Menu
+[8] Return to Main Menu
+Input your choice: 
+[----------List Recipe Titles----------]
+1. Itlog na Maalat
+2. Pork Adobo
+3. Prinitong Isda
+4. Saging Saba
+
+Press any key to continue...[----------Access Menu----------]
+[1] Import Recipes
+[2] List Recipe Titles
+[3] Scan Recipes
+[4] Search Recipe by Title
+[5] Generate Shopping List
+[6] Scan Recipes by Ingredient
+[7] Recommended Menu
+[8] Return to Main Menu
+Input your choice: 
+[----------Generate Shopping List----------]
+[----------List Recipe Titles----------]
+1. Itlog na Maalat
+2. Pork Adobo
+3. Prinitong Isda
+4. Saging Saba
+
+Choose a Recipe: Input a serving size: Recipe: Pork Adobo
+Pork Belly           200.00    g  0.00
+Soy Sauce             0.40  cup  0.00
+Vinegar              10.00  cup  0.00
+
+Press any key to continue: [----------Access Menu----------]
+[1] Import Recipes
+[2] List Recipe Titles
+[3] Scan Recipes
+[4] Search Recipe by Title
+[5] Generate Shopping List
+[6] Scan Recipes by Ingredient
+[7] Recommended Menu
+[8] Return to Main Menu
+Input your choice: 
+[----------Recommended Menu----------]
+Target Calorie Intake: [----------Scan Recipes----------]
+[----------Recipe Info----------]
+Name: Pork Adobo
+Classification: main
+Serving size: 5
+Total Calories: 0
+
+Ingredients
+	1. Pork Belly
+		Quantity: 100 g
+		Calories: 0
+	2. Soy Sauce
+		Quantity: 0.2 cup
+		Calories: 0
+	3. Vinegar
+		Quantity: 5 cup
+		Calories: 0
+Instructions
+	1. Mix all in a pot.
+	2. Boil until tender.
+	3. Thicken the sauce.
+	4. Serve with rice.
+
+[----------Recipe Info----------]
+Name: Itlog na Maalat
+Classification: starter
+Serving size: 3
+Total Calories: 0
+
+Ingredients
+	1. Salted Egg
+		Quantity: 0.666667 pcs
+		Calories: 0
+	2. Tomato
+		Quantity: 0.666667 pcs
+		Calories: 0
+Instructions
+	1. Dice the eggs.
+	2. Chop the tomatoes.
+	3. Mix in a bowl.
+
+[N] Next Page [P] Previous Page [X] Return to Menu [----------Recipe Info----------]
+Name: Saging Saba
+Classification: dessert
+Serving size: 5
+Total Calories: 250
+
+Ingredients
+	1. Banana
+		Quantity: 0.6 pcs
+		Calories: 250
+	2. Brown Sugar
+		Quantity: 1 cup
+		Calories: 0
+Instructions
+	1. Boil sugar in water.
+	2. Add sliced bananas.
+	3. Cook until soft.
+
+[N] Next Page [P] Previous Page [X] Return to Menu 
+[----------Access Menu----------]
+[1] Import Recipes
+[2] List Recipe Titles
+[3] Scan Recipes
+[4] Search Recipe by Title
+[5] Generate Shopping List
+[6] Scan Recipes by Ingredient
+[7] Recommended Menu
+[8] Return to Main Menu
+Input your choice: 
+[----------Food Tracker----------]
+[A] Access Recipes
+[U] Update Recipes
+[E] Exit
+

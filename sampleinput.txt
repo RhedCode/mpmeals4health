@@ -1,25 +1,65 @@
-Banana
-15
+U
+admin
+ad1234
+1
+Ketchup
+35
 grams
-120
-Ice cream
-3
-grams
-145
+35
+4
+sample.txt
+2
 N
-P
 X
+5
 Banana Split
 dessert
-4
+3
 Banana
 Y
-Ice cream
+Ketchup
 N
 1
 Slice the banana into 5 slices.
 Y
 2
-Scoop up three ice cream balls.
+Sprinkle some ketchup on top.
+Y
+3
+Mix it all together.
 N
+12
+recipe.txt
+9
+N
+N
+N
+N
+N
+8
+a
+10
 Banana Split
+a
+7
+Banana Split
+9
+N
+N
+N
+N
+14
+A
+2
+a
+5
+Pork Adobo
+2
+a
+7
+1250
+N
+N
+N
+8
+E

@@ -547,7 +547,6 @@ ViewRecipe(DishType dish)
 	for (i=0; i<dish.insCount; i++)
 		printf("	%d. %s\n", i+1, dish.instructions[i]);
 	printf("\n");
-	printf("[N] Next Page [P] Previous Page [X] Return to Menu ");
 }
 
 /* ComputeCalories that calculates the total calories in the ingredient list.
