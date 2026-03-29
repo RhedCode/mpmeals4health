@@ -103,7 +103,7 @@ loadAccount(String20 username, String20 password)
 	FILE *fp;
 	String20 fileName = "admin.txt";
 	
-	fp = fopen(fileName, "r");	
+	fp = fopen(fileName, "r");
 	
 	if (fp != NULL)
 	{
@@ -111,7 +111,16 @@ loadAccount(String20 username, String20 password)
 		fclose(fp);
 	}
 	else 
-		printf("File was not loaded!\n");
+	{
+		fp = fopen(fileName, "w");
+		fprintf(fp, "admin\n");
+		fprintf(fp, "ad1234\n");
+		fclose(fp);
+		
+		fp = fopen(fileName, "r");
+		fscanf(fp, "%s%s", username, password);
+		fclose(fp);
+	}
 }
 
 /* loginPage displays the login page where the user can "login" to the update menu.
@@ -650,7 +659,7 @@ SaveIngredients(FILE *fp,
 		fprintf(fp, "%g %s %s\n", dish.ingredients[i].quantity, dish.ingredients[i].unit, dish.ingredients[i].item);
 }
 
-/* SaveIngredients "saves" or writes the current infomation from the instructions string array 
+/* SavesSteps "saves" or writes the current infomation of the steps from the string array 
    inside of a dish struct into a file.
      
    @param *fp is the file to be written.
@@ -668,15 +677,27 @@ SaveSteps(FILE *fp,
 		fprintf(fp, "%s\n", dish.instructions[i]);
 }
 
+/* FindCalorie finds the calorie of a ingredient from the food struct array, which assumes that
+   the name of the ingredient and the name of the food in the food struct array are of the same
+   "ingredient". Ex. Banana calorie in the recipe of Banana Split and the Banana calorie in the
+   food calorie array are equal 
+     
+   @param dishItem is the name of the dish.
+   @param food is the food struct array.
+   @param foodRow is the current row/count of the food struct array.
+   @returns 0 if ingredient from recipe was not found in the food struct array. Otherwise returns
+   the calorie of the ingredient found in the food struct array.
+*/
+
 int 
-FindCalorie(String20 dishItem, 
+FindCalorie(String20 foodItem, 
 			IngredientsType food[],
 			int row)
 {
 	int i, found = -1;
 	
 	for (i=0; i<row && found == -1; i++)	
-		if (strcmp(dishItem, food[i].item) == 0)
+		if (strcmp(foodItem, food[i].item) == 0)
 			found = food[i].calories; 
 	
 	if (found == -1)
@@ -685,11 +706,11 @@ FindCalorie(String20 dishItem,
 		return found;
 }
 
-/* SaveIngredients "saves" or writes the current infomation from the instructions string array 
-   inside of a dish struct into a file.
+/* ReadIngredients "reads" of the ingredients from a recipe in a file.
      
-   @param *fp is the file to be written.
+   @param *fp is the file to be read.
    @param dish is the given dish struct.
+   @param food is the food struct array of the current list of ingredients.
    @param foodRow is the current row/count of the food struct array.
 */
 
@@ -710,7 +731,13 @@ ReadIngredients(FILE *fp,
 		dish->ingredients[i].calories = FindCalorie(dish->ingredients[i].item, food, row);
 	}
 }
-		
+
+/* ReadBuffIngredients "reads" the ingredients, but does not store it. It acts as a "buffer"
+   reader.
+     
+   @param *fp is the file to be read.
+   @param count is the count of ingredients to be read.
+*/
 void 
 ReadBuffIngredients(FILE *fp,
 					int count)
@@ -727,6 +754,11 @@ ReadBuffIngredients(FILE *fp,
 	}
 }
 
+/* ReadSteps "reads" the steps and stores it in the corresponding recipe.
+     
+   @param *fp is the file to be read.
+   @param *dish is the pointer address to the dish.
+*/
 void
 ReadSteps(FILE *fp, 
 		  DishType *dish)
@@ -737,6 +769,11 @@ ReadSteps(FILE *fp,
 		getFileString70(dish->instructions[i], fp);
 }
 
+/* ReadBuffSteps "reads" the steps but does not store the corresponding steps.
+     
+   @param *fp is the file to be read.
+   @param count is the current count or steps that are recorded in a recipe.
+*/
 void
 ReadBuffSteps(FILE *fp,
 			  int count)

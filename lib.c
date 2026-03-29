@@ -157,7 +157,7 @@ LoadCalories(IngredientsType food[], int *row)
 	else
 	{
 		//Reads food name. Checks if file read is EOF (e.g. -1).
-		while (getFileString20(food[*row].item, fp_load) != -1)
+		while (getFileString20(food[*row].item, fp_load) != -1 && *row < 50)
 		{
 			//Checks if food is unique (e.g. -1).
 			if ((dupe = DuplicateFood(food, *row)) == -1)
@@ -615,6 +615,7 @@ SearchRecipeTitle(DishType dish[],
    
    @param dish - Contains a recipe/dish struct array of max size 50.
    @param dishRow - Contains the current size of dish row.
+   @param sort - A boolean value that determines if the function will sort the recipes or not.
 */
 
 void
@@ -783,65 +784,95 @@ RecommendedMenu(DishType dish[],
 		temp[SIZE],
 		tempCount, 
 		recoCount = 0, 
-		random, 
+		random,
+		caloriePerServing, 
 		calorie;
 	
 	printf("[----------Recommended Menu----------]\n");
 	printf("Target Calorie Intake: ");
-	srand(time(NULL));
 	myIntInput(&calorie);
 	
 	//Checks for main dishes under or equal to the calorie intake
 	tempCount = 0;
 	for (i=0; i<row; i++)
-		if (ComputeCalories(dish[i]) <= calorie && 
+	{
+		caloriePerServing = ComputeCalories(dish[i])/dish[i].serving;
+		if (caloriePerServing <= calorie && //Divides it for servings more than 1 person
 			strcmp(dish[i].classification, "main") == 0)
 		{
 			temp[tempCount] = i;
 			tempCount++;
 		}
+	}
 	
 	if (tempCount > 0)
 	{
 		random = rand() % tempCount;
 		recommendation[recoCount] = dish[temp[random]];
-		calorie -= ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		caloriePerServing = ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		calorie -= caloriePerServing;
+		
+		for (i=0; i<recommendation[recoCount].ingCount; i++)
+		{
+			recommendation[recoCount].ingredients[i].quantity *= (1/(recommendation[recoCount].serving*1.0));
+			recommendation[recoCount].ingredients[i].calories /= recommendation[recoCount].serving;
+		}
 		recoCount++;
 	}
 	
 	//Checks for starter dishes under or equal to the calorie intake
 	tempCount = 0; //Resets temp count
 	for (i=0; i<row; i++)
-		if (ComputeCalories(dish[i]) <= calorie && 
+	{
+		caloriePerServing = ComputeCalories(dish[i])/dish[i].serving;
+		if (caloriePerServing <= calorie && 
 			strcmp(dish[i].classification, "starter") == 0)
 		{
 			temp[tempCount] = i;
 			tempCount++;
 		}
+	}
 		
 	if (tempCount > 0)
 	{
 		random = rand() % tempCount; //Range of random from 0 to tempCount
 		recommendation[recoCount] = dish[temp[random]];
-		calorie -= ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		caloriePerServing = ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		calorie -= caloriePerServing;
+		
+		for (i=0; i<recommendation[recoCount].ingCount; i++)
+		{
+			recommendation[recoCount].ingredients[i].quantity *= (1/(recommendation[recoCount].serving*1.0));
+			recommendation[recoCount].ingredients[i].calories /= recommendation[recoCount].serving;
+		}
 		recoCount++;
 	}
 	
 	//Checks for dessert dishes under or equal to the calorie intake
 	tempCount = 0;
 	for (i=0; i<row; i++)
-		if (ComputeCalories(dish[i]) <= calorie && 
+	{
+		caloriePerServing = ComputeCalories(dish[i])/dish[i].serving;
+		if (caloriePerServing <= calorie && 
 			strcmp(dish[i].classification, "dessert") == 0)
 		{
 			temp[tempCount] = i;
 			tempCount++;
 		}
+	}
 		
 	if (tempCount > 0)
 	{
 		random = rand() % tempCount;
 		recommendation[recoCount] = dish[temp[random]];
-		calorie -= ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		caloriePerServing = ComputeCalories(recommendation[recoCount])/recommendation[recoCount].serving;
+		calorie -= caloriePerServing;
+		
+		for (i=0; i<recommendation[recoCount].ingCount; i++)
+		{
+			recommendation[recoCount].ingredients[i].quantity *= (1/(recommendation[recoCount].serving*1.0));
+			recommendation[recoCount].ingredients[i].calories /= recommendation[recoCount].serving;
+		}
 		recoCount++;
 	}
 	

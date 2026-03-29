@@ -34,38 +34,55 @@ struct DishTag
 };
 typedef struct DishTag DishType;
 
-//Helper Functions
+/**************************** HELPER FUNCTIONS *****************************/
 /* Recipe Helpers */
-
 int DuplicateFood(IngredientsType food[], int row);
+int DuplicateDish(DishType dish[], int row);
+void DisplayFood(IngredientsType food[], int row, int page);
+
+void SortAlphabetical(DishType dish[], int row);
+void DeleteArr(String70 ins[], int count, int key);
 void DeleteStructFood(IngredientsType food[], int count, int key);
 void DeleteStructDish(DishType dish[], int count, int key);
+void SwapStruct(DishType *dish1, DishType *dish2);
 
+int CheckIngredient(DishType dish, String20 ingredient, int ingCount);
 int ComputeCalories(DishType dish);
-void SwapStruct(DishType * dish1, DishType * dish2);
-void SortAlphabetical(DishType dish[], int row);
+int FindCalorie(String20 foodItem, IngredientsType food[], int row);
+int FindRecipeFromStart(DishType dish[], String20 ingredient, int start, int row);
+int FindRecipeFromEnd(DishType dish[], String20 ingredient, int end);
+
 void ViewRecipe(DishType dish);
 int RecipeTitleExists(DishType dish[], String20 name, int row);
+
+/* Save and Load System */
+void SaveIngredients(FILE *fp, DishType dish);
+void SaveSteps(FILE *fp, DishType dish);
 
 /* Input Handlers */
 void getString70(String70 string);
 void getString20(String20 string);
 void getFileString70(String70 string, FILE *fp);
 int getFileString20(String20 string, FILE *fp);
-
 int nextLine();
 void toLower(String15 string);
 void myIntInput(int *dest);
 void myCharInput(char *dest);
 void myFloatInput(float *dest);
+void ReadIngredients(FILE *fp, DishType *dish, IngredientsType food[], int row);
+void ReadBuffIngredients(FILE *fp, int count);
+void ReadSteps(FILE *fp, DishType *dish);
+void ReadBuffSteps(FILE *fp, int count);
 
 /* Admin Page */
 void loadAccount(String20 username, String20 password);
 int loginPage(String20 username, String20 password);
-
+void ChangePassword(String20 username, String20 password);
 int isClassification(String15 classification);
 
-//Main Functions
+/**************************** END OF HELPER FUNCTIONS *****************************/
+
+/**************************** MAIN FUNCTIONS *****************************/
 void AddFoodCalorie(IngredientsType food[], int *row);
 void ViewFood(IngredientsType food[], int row);
 void SaveCalorie(IngredientsType food[], int row);
@@ -109,3 +126,5 @@ Access(DishType dish[],
 	   IngredientsType food[], 
 	   int *dishRow, 
 	   int foodRow);
+	   
+/**************************** END OF MAIN FUNCTIONS *****************************/

@@ -30,6 +30,7 @@ Access(DishType dish[],
 	   int *dishRow, 
 	   int foodRow)
 {
+	char buff;
 	int input, exit = 0;
 	
 	while (!exit)
@@ -55,7 +56,14 @@ Access(DishType dish[],
 		switch (input)
 		{
 			case 1:
-				ImportRecipes(dish, food, dishRow, foodRow);
+				if (*dishRow < SIZE)
+					ImportRecipes(dish, food, dishRow, foodRow);
+				else
+				{
+					printf("ERROR: MAX SIZE OF 50 HAS BEEN REACHED!\n");
+					printf("Press any key to continue...");
+					myCharInput(&buff);
+				}
 				break;
 			case 2:
 				ListRecipeTitles(dish, *dishRow);
@@ -91,6 +99,7 @@ Update(DishType dish[],
 	   String20 password,
 	   int *status)
 {
+	char buff;
     int input, exit = 0;
     
     while (!exit)
@@ -132,7 +141,14 @@ Update(DishType dish[],
 			switch (input)
 			{
 				case 1:
-					AddFoodCalorie(food, foodRow);
+					if (*foodRow < SIZE)
+						AddFoodCalorie(food, foodRow);
+					else
+					{
+						printf("ERROR: MAX SIZE OF 50 HAS BEEN REACHED!\n");
+						printf("Press any key to continue...");
+						myCharInput(&buff);
+					}
 					break;
 				case 2:
 					ViewFood(food, *foodRow);
@@ -165,7 +181,14 @@ Update(DishType dish[],
 					ExportRecipes(dish, *dishRow);
 					break;
 				case 12:
-					ImportRecipes(dish, food, dishRow, *foodRow);
+					if (*dishRow < SIZE)
+						ImportRecipes(dish, food, dishRow, *foodRow);
+					else
+					{
+						printf("ERROR: MAX SIZE OF 50 HAS BEEN REACHED!\n");
+						printf("Press any key to continue...");
+						myCharInput(&buff);
+					}
 					break;
 				case 13:
 					ChangePassword(username, password);
@@ -231,6 +254,7 @@ main()
     int status = 0,
 		foodRow = 0,
 		dishRow = 0;
+	srand(time(NULL));
 
 	while (Menu(dish, food, &dishRow, &foodRow, username, password, &status));
     return 0;
